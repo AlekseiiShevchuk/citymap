@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\City;
 use App\Observers\CityObserver;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         City::observe(CityObserver::class);
+        Schema::defaultStringLength(191);
     }
 
     /**
