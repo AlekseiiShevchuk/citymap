@@ -29,7 +29,6 @@ class UpdateCitiesRequest extends FormRequest
             
             'latitude' => 'required',
             'longitude' => 'required',
-            'cities_to_go.*' => 'exists:languages,id',
         ];
     }
 }

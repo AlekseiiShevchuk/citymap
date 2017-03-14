@@ -17,7 +17,7 @@ class City extends Model
 {
     protected $fillable = ['name_en', 'population', 'year_of_foundation', 'latitude', 'longitude'];
 
-    protected $visible = ['id','name_en', 'population', 'year_of_foundation', 'latitude', 'longitude','localized_data','cities_to_go','weight','is_possible_to_get','possible_cities_to_go'];
+    protected $visible = ['id','name_en', 'population', 'year_of_foundation', 'latitude', 'longitude','localized_data','cities_to_go','weight','is_possible_to_get','possible_cities_to_go','updated_at'];
     
 
     /**
@@ -67,13 +67,13 @@ class City extends Model
     public function cities_to_go()
     {
         return $this->belongsToMany(City::class, 'city_city_to_go', 'city_id','city_to_go_id')
-            ->withPivot(['weight','is_possible_to_get'])->select(['id','weight','is_possible_to_get']);
+            ->withPivot(['weight','is_possible_to_get'])->select(['id', 'name_en','weight','is_possible_to_get']);
     }
 
     public function possible_cities_to_go()
     {
         return $this->belongsToMany(City::class, 'city_city_to_go', 'city_id','city_to_go_id')
-            ->withPivot(['weight','is_possible_to_get'])->wherePivot('is_possible_to_get',1)->select(['id','weight','is_possible_to_get']);
+            ->withPivot(['weight','is_possible_to_get'])->wherePivot('is_possible_to_get',1)->select(['id','name_en','weight','is_possible_to_get']);
     }
 
     public function localized_data()

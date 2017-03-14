@@ -89,13 +89,22 @@ class CitiesController extends Controller
      */
     public function update(UpdateCitiesRequest $request, $id)
     {
-        //dd($request->input('cities_to_go'));
+
         if (! Gate::allows('city_edit')) {
             return abort(401);
         }
+
         $city = City::findOrFail($id);
         $city->update($request->all());
-        $city->cities_to_go()->sync(array_filter((array)$request->input('cities_to_go')));
+
+        foreach ($request->input('cities_to_go') as $city_to_go_id => $values){
+            $city_to_go = $city->cities_to_go->find($city_to_go_id);
+            $city_to_go->pivot->weight = $values['weight'];
+            if(isset($values['is_possible_to_get'])){
+                $city_to_go->pivot->is_possible_to_get = $values['is_possible_to_get'];
+            }
+            $city_to_go->pivot->save();
+        }
 
         return redirect()->route('cities.index');
     }
