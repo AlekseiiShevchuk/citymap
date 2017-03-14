@@ -9,5 +9,7 @@ Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1', 'as' => 'api.'], funct
         Route::resource('localized_city_datas', 'LocalizedCityDatasController');
 
         Route::resource('players', 'PlayersController');
+            Route::get('profile', 'PlayersController@showProfile');
+            Route::put('profile', 'PlayersController@update');
 
 });

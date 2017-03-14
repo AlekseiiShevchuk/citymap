@@ -10,7 +10,7 @@ use App\Http\Requests\UpdateLocalizedCityDatasRequest;
 
 class LocalizedCityDatasController extends Controller
 {
-    public function index()
+    /*public function index()
     {
         return LocalizedCityDatum::all();
     }
@@ -40,5 +40,5 @@ class LocalizedCityDatasController extends Controller
         $localized_city_datum = LocalizedCityDatum::findOrFail($id);
         $localized_city_datum->delete();
         return '';
-    }
+    }*/
 }

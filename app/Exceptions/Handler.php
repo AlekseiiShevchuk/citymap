@@ -3,8 +3,15 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -38,25 +45,65 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Exception $e
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Exception $e)
     {
-        return parent::render($request, $exception);
+
+        if ($e instanceof MethodNotAllowedHttpException) {
+            return response()->json('Method Not Allowed', 405);
+        }
+
+        if ($e instanceof BadRequestHttpException) {
+            return response()->json($e->getMessage(), 400);
+        }
+
+        if ($e instanceof ValidationException && ($request->expectsJson() || $request->wantsJson() || $request->isJson())) {
+            $validationErrors = $e->validator->errors();
+            return response()->json($validationErrors, 400);
+        }
+
+        if ($e instanceof \PDOException) {
+            if (strtolower(env('APP_ENV')) == 'local') {
+                return response()->json($e->getMessage(), 500);
+            } else {
+                return response()->json('Internal Server Error', 500);
+            }
+        }
+
+        if ($e instanceof ModelNotFoundException) {
+            $modelPathAsArray = explode('\\', $e->getModel());
+            $model = $modelPathAsArray[count($modelPathAsArray) - 1];
+            return response()->json($model . ' not found', 404);
+        }
+
+        if ($e instanceof NotFoundHttpException) {
+            return response()->json('Resource not found', 404);
+        }
+
+        if ($e instanceof AuthorizationException && ($request->expectsJson() || $request->wantsJson() || $request->isJson())) {
+            return response()->json($e->getMessage(), 403);
+        }
+
+        if ($e instanceof ServiceUnavailableHttpException) {
+            return response()->json('Authentication Service is not available. Try later.', 503);
+        }
+
+        return parent::render($request, $e);
     }
 
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Auth\AuthenticationException $exception
      * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        if ($request->expectsJson()) {
+        if ($request->expectsJson() || $request->wantsJson() || $request->isJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 

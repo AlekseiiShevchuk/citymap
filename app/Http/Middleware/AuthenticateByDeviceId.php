@@ -22,8 +22,10 @@ class AuthenticateByDeviceId
     {
         if ($device_id = $request->header('device_id')) {
             $language = Language::where('abbreviation','en')->first();
+            Player::unguard();
             $player = Player::firstOrCreate(['device_id' => $device_id],
                 ['device_id' => $device_id, 'nickname' => $device_id , 'language_id' => $language->id]);
+            Player::reguard();
             $player = Player::findOrFail($player->id);
             Auth::login($player);
         }else{

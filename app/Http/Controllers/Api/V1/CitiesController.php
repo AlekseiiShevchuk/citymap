@@ -20,7 +20,7 @@ class CitiesController extends Controller
         return City::findOrFail($id)->load(['localized_data.language']);
     }
 
-    public function update(UpdateCitiesRequest $request, $id)
+   /* public function update(UpdateCitiesRequest $request, $id)
     {
         $city = City::findOrFail($id);
         $city->update($request->all());
@@ -40,5 +40,5 @@ class CitiesController extends Controller
         $city = City::findOrFail($id);
         $city->delete();
         return '';
-    }
+    }*/
 }

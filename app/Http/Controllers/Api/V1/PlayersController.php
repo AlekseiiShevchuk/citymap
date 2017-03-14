@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePlayersRequest;
 use App\Http\Requests\UpdatePlayersRequest;
+use Illuminate\Support\Facades\Auth;
 
 class PlayersController extends Controller
 {
@@ -15,12 +16,19 @@ class PlayersController extends Controller
         return Player::all();
     }
 
-    public function show($id)
+    public function showProfile()
     {
-        return Player::findOrFail($id);
+        return Auth::user();
     }
 
-    public function update(UpdatePlayersRequest $request, $id)
+    public function update(UpdatePlayersRequest $request)
+    {
+        Auth::user()->update($request->all());
+        Auth::user()->save();
+        return Auth::user();
+    }
+
+    /*public function update(UpdatePlayersRequest $request, $id)
     {
         $player = Player::findOrFail($id);
         $player->update($request->all());
@@ -40,5 +48,5 @@ class PlayersController extends Controller
         $player = Player::findOrFail($id);
         $player->delete();
         return '';
-    }
+    }*/
 }
