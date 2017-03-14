@@ -21,14 +21,22 @@ $this->post('password/reset', 'Auth\ResetPasswordController@reset')->name('auth.
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index');
+
     Route::resource('roles', 'RolesController');
     Route::post('roles_mass_destroy', ['uses' => 'RolesController@massDestroy', 'as' => 'roles.mass_destroy']);
+
     Route::resource('users', 'UsersController');
     Route::post('users_mass_destroy', ['uses' => 'UsersController@massDestroy', 'as' => 'users.mass_destroy']);
+
     Route::resource('languages', 'LanguagesController');
     Route::post('languages_mass_destroy', ['uses' => 'LanguagesController@massDestroy', 'as' => 'languages.mass_destroy']);
+
     Route::resource('cities', 'CitiesController');
     Route::post('cities_mass_destroy', ['uses' => 'CitiesController@massDestroy', 'as' => 'cities.mass_destroy']);
+
     Route::resource('localized_city_datas', 'LocalizedCityDatasController');
     Route::post('localized_city_datas_mass_destroy', ['uses' => 'LocalizedCityDatasController@massDestroy', 'as' => 'localized_city_datas.mass_destroy']);
+
+    Route::resource('players', 'PlayersController');
+    Route::post('players_mass_destroy', ['uses' => 'PlayersController@massDestroy', 'as' => 'players.mass_destroy']);
 });
