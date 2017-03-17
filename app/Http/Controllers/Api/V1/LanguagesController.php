@@ -12,7 +12,7 @@ class LanguagesController extends Controller
 {
     public function index()
     {
-        return Language::where('is_active_for_admin',1)->get();
+        return Language::where('is_active_for_users',1)->get();
     }
 
     /*public function show($id)

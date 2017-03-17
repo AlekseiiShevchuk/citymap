@@ -24,11 +24,10 @@ class StoreCitiesRequest extends FormRequest
     {
         return [
             'name_en' => 'required|unique:cities,name_en',
-            
-            
             'latitude' => 'required',
             'longitude' => 'required',
-            'cities_to_go.*' => 'exists:languages,id',
+            'languages.*.name' => 'required',
+            'languages.*.description' => 'required',
         ];
     }
 }

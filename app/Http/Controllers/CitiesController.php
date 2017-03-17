@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\Language;
+use App\LocalizedCityDatum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StoreCitiesRequest;
@@ -36,7 +38,7 @@ class CitiesController extends Controller
             return abort(401);
         }
         $relations = [
-            'cities_to_go' => \App\City::get()->pluck('name_en', 'id'),
+            'languages' => Language::where('is_active_for_admin',1)->get(),
         ];
 
         return view('cities.create', $relations);
@@ -54,7 +56,15 @@ class CitiesController extends Controller
             return abort(401);
         }
         $city = City::create($request->all());
-        $city->cities_to_go()->sync(array_filter((array)$request->input('cities_to_go')));
+
+        foreach ($request->get('languages') as $language_id => $inputLocalizedData){
+            LocalizedCityDatum::create([
+                'name' => $inputLocalizedData['name'],
+                'description' => $inputLocalizedData['description'],
+                'language_id' => $language_id,
+                'city_id' => $city->id,
+            ]);
+        }
 
         return redirect()->route('cities.index');
     }

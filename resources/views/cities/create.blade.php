@@ -70,18 +70,41 @@
                     @endif
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-12 form-group">
-                    {!! Form::label('cities_to_go', 'Cities to go', ['class' => 'control-label']) !!}
-                    {!! Form::select('cities_to_go[]', $cities_to_go, old('cities_to_go'), ['class' => 'form-control select2', 'multiple' => 'multiple']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('cities_to_go'))
-                        <p class="help-block">
-                            {{ $errors->first('cities_to_go') }}
-                        </p>
-                    @endif
+            <hr>
+            <h3>Section to add Localized City data</h3>
+            <div class="alert-danger">All fields required</div>
+            <hr>
+
+            @foreach($languages as $language)
+                <h4>{{$language->name}}*</h4>
+                <div class="row">
+                    <div class="col-xs-12 form-group">
+                        {!! Form::label('name', 'Localized Name for ' . $language->name.' language*', ['class' => 'control-label']) !!}
+                        {!! Form::text('languages[' .$language->id . '][name]', old('languages[' .$language->abbreviation . '][name]'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                        <p class="help-block"></p>
+                        @if($errors->has('languages.' .$language->id . '.name'))
+                            <p class="help-block">
+                                {{ $errors->first('languages.' .$language->id . '.name') }}
+                            </p>
+                        @endif
+                    </div>
                 </div>
-            </div>
+                <div class="row">
+                    <div class="col-xs-12 form-group">
+                        {!! Form::label('description', 'Localized Description for ' . $language->name.' language*', ['class' => 'control-label']) !!}
+                        {!! Form::textarea('languages[' .$language->id . '][description]', old('languages[' .$language->abbreviation . '][description]'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                        <p class="help-block"></p>
+                        @if($errors->has('languages.' .$language->id . '.description'))
+                            <p class="help-block">
+                                {{ $errors->first('languages.' .$language->id . '.description') }}
+                            </p>
+                        @endif
+                    </div>
+                </div>
+                <hr>
+            @endforeach
+
+
             
         </div>
     </div>
