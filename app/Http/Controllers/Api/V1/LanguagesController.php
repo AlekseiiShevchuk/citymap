@@ -12,10 +12,10 @@ class LanguagesController extends Controller
 {
     public function index()
     {
-        return Language::all();
+        return Language::where('is_active_for_users',1)->get();
     }
 
-    public function show($id)
+    /*public function show($id)
     {
         return Language::findOrFail($id);
     }
@@ -40,5 +40,5 @@ class LanguagesController extends Controller
         $language = Language::findOrFail($id);
         $language->delete();
         return '';
-    }
+    }*/
 }

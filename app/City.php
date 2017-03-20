@@ -17,8 +17,7 @@ class City extends Model
 {
     protected $fillable = ['name_en', 'population', 'year_of_foundation', 'latitude', 'longitude'];
 
-    protected $visible = ['id','name_en', 'population', 'year_of_foundation', 'latitude', 'longitude','localized_data','cities_to_go','weight','is_possible_to_get','possible_cities_to_go'];
-    
+    protected $visible = ['id','name_en', 'population', 'year_of_foundation', 'latitude', 'longitude','localized_data','cities_to_go','weight','is_possible_to_get','possible_cities_to_go','updated_at'];
 
     /**
      * Set attribute to money format

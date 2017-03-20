@@ -73,7 +73,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('cities_to_go', 'Cities to go', ['class' => 'control-label']) !!}
+                    {!! Form::label('cities_to_go', 'Possible cities to go', ['class' => 'control-label']) !!}
                     @foreach($city->cities_to_go as $city_to_go)
                         <hr>
                         <h3>{{$city_to_go->name_en}}</h3>

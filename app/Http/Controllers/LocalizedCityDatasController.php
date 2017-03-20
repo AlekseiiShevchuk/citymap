@@ -76,9 +76,9 @@ class LocalizedCityDatasController extends Controller
             'languages' => \App\Language::where('is_active_for_admin',1)->get()->pluck('name', 'id')->prepend('Please select', ''),
         ];
 
-        $localized_city_datum = LocalizedCityDatum::findOrFail($id);
+        $localized_city_data = LocalizedCityDatum::findOrFail($id);
 
-        return view('localized_city_datas.edit', compact('localized_city_datum') + $relations);
+        return view('localized_city_datas.edit', compact('localized_city_data') + $relations);
     }
 
     /**
@@ -116,9 +116,9 @@ class LocalizedCityDatasController extends Controller
             'languages' => \App\Language::where('is_active_for_admin',1)->get()->pluck('name', 'id')->prepend('Please select', ''),
         ];
 
-        $localized_city_datum = LocalizedCityDatum::findOrFail($id);
+        $localized_city_data = LocalizedCityDatum::findOrFail($id);
 
-        return view('localized_city_datas.show', compact('localized_city_datum') + $relations);
+        return view('localized_city_datas.show', compact('localized_city_data') + $relations);
     }
 
 
