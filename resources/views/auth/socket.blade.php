@@ -13,7 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/0.12.16/vue.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
 <script>
-    var socket = io('http://localhost:3000');
+    var socket = io('http://138.68.93.20:3000');
     var app = new Vue({
         el: 'body',
         data: {
