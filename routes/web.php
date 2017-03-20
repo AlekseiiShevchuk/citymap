@@ -1,14 +1,32 @@
 <?php
-Route::get('/', function () {
-    return redirect('/home');
-});
+// TMP Routs START
 
+//page for socket testing
 Route::get('/redis', function () {
 
     event(new \App\Events\SocketSendTestMessage('Just a test message'));
 
     return view('auth.socket');
 
+});
+//set random weight for each city to go
+Route::get('/set-random-weight', function () {
+
+    $cities = \App\City::all();
+
+    foreach ($cities as $city)
+    {
+        foreach ($city->cities_to_go as $cityToGo){
+            $cityToGo->pivot->weight = rand(10,200);
+            $cityToGo->pivot->save();
+        }
+    }
+
+});
+// TMP Routs END
+
+Route::get('/', function () {
+    return redirect('/home');
 });
 
 // Authentication Routes...
