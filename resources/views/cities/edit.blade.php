@@ -2,7 +2,7 @@
 
 @section('content')
     <h3 class="page-title">@lang('quickadmin.cities.title')</h3>
-    
+
     {!! Form::model($city, ['method' => 'PUT', 'route' => ['cities.update', $city->id]]) !!}
 
     <div class="panel panel-default">
@@ -74,16 +74,16 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('cities_to_go', 'Cities to go', ['class' => 'control-label']) !!}
-                    {!! Form::select('cities_to_go[]', $cities_to_go, old('cities_to_go') ? old('cities_to_go') : $city->cities_to_go->pluck('id')->toArray(), ['class' => 'form-control select2', 'multiple' => 'multiple']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('cities_to_go'))
-                        <p class="help-block">
-                            {{ $errors->first('cities_to_go') }}
-                        </p>
-                    @endif
+                    @foreach($city->cities_to_go as $city_to_go)
+                        <hr>
+                        <h3>{{$city_to_go->name_en}}</h3>
+                        {!! Form::label('select weight', 'Select weight:', ['class' => 'control-label']) !!}
+                        {!! Form::number('cities_to_go[' . $city_to_go->id . '][' . 'weight]', $city_to_go->weight, ['class' => 'form-control', 'placeholder' => 'weight']) !!}
+                        {!! Form::label('is possible to get', 'Is it possible to get ' . $city_to_go->name_en  .' from ' . $city->name_en, ['class' => 'control-label']) !!}
+                        {!! Form::checkbox('cities_to_go[' . $city_to_go->id . '][' . 'is_possible_to_get]', 1, $city_to_go->is_possible_to_get) !!}
+                    @endforeach
                 </div>
             </div>
-            
         </div>
     </div>
 

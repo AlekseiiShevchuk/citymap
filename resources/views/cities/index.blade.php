@@ -45,8 +45,8 @@
                                 <td>{{ $city->latitude }}</td>
                                 <td>{{ $city->longitude }}</td>
                                 <td>
-                                    @foreach ($city->cities_to_go as $singleCitiesToGo)
-                                        <span class="label label-info label-many">{{ $singleCitiesToGo->name }}</span>
+                                    @foreach ($city->possible_cities_to_go as $singleCitiesToGo)
+                                        <span class="label label-info label-many">{{ $singleCitiesToGo->name_en }}</span>
                                     @endforeach
                                 </td>
                                 <td>

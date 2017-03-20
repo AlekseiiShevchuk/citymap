@@ -3,6 +3,14 @@ Route::get('/', function () {
     return redirect('/home');
 });
 
+Route::get('/redis', function () {
+
+    event(new \App\Events\SocketSendTestMessage('Just a test message'));
+
+    return view('auth.socket');
+
+});
+
 // Authentication Routes...
 $this->get('login', 'Auth\LoginController@showLoginForm')->name('auth.login');
 $this->post('login', 'Auth\LoginController@login')->name('auth.login');
