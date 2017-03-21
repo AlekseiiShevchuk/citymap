@@ -23,6 +23,7 @@
 
                         <th>@lang('quickadmin.players.fields.device-id')</th>
                         <th>@lang('quickadmin.players.fields.nickname')</th>
+                        <th>Avatar</th>
                         <th>@lang('quickadmin.players.fields.language')</th>
                         <th>&nbsp;</th>
                     </tr>
@@ -38,6 +39,7 @@
 
                                 <td>{{ $player->device_id }}</td>
                                 <td>{{ $player->nickname }}</td>
+                                <td>@if($player->avatar)<a href="{{ asset('uploads/' . $player->avatar) }}" target="_blank"><img height="150px" src="{{ asset('uploads/' . $player->avatar) }}"/></a>@endif</td>
                                 <td>{{ $player->language->name or '' }}</td>
                                 <td>
                                     @can('player_view')

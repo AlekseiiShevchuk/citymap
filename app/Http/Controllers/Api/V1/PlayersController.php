@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Player;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePlayersRequest;
+use App\Http\Controllers\Traits\FileUploadTrait;
 use App\Http\Requests\UpdatePlayersRequest;
+use App\Player;
 use Illuminate\Support\Facades\Auth;
 
 class PlayersController extends Controller
 {
+    use FileUploadTrait;
+
     public function index()
     {
         return Player::all();
@@ -24,6 +25,14 @@ class PlayersController extends Controller
     public function update(UpdatePlayersRequest $request)
     {
         Auth::user()->update($request->all());
+        Auth::user()->save();
+        return Auth::user();
+    }
+
+    public function uploadAvatar(UpdatePlayersRequest $request)
+    {
+        $request = $this->saveFiles($request);
+        Auth::user()->update($request->only(['avatar']));
         Auth::user()->save();
         return Auth::user();
     }

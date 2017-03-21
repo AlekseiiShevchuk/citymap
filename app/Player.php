@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class Player extends Authenticatable
 {
-    protected $fillable = ['nickname', 'language_id'];
+    protected $fillable = ['nickname', 'language_id', 'avatar'];
 
 
     /**
