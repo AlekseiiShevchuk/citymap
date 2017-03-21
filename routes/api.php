@@ -13,4 +13,6 @@ Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1', 'as' => 'api.'], funct
             Route::put('profile', 'PlayersController@update');
             Route::post('profile', 'PlayersController@uploadAvatar');
 
+        Route::resource('city_steps', 'CityStepsController');
+
 });

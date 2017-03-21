@@ -65,4 +65,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('players', 'PlayersController');
     Route::post('players_mass_destroy', ['uses' => 'PlayersController@massDestroy', 'as' => 'players.mass_destroy']);
+
+    Route::resource('city_steps', 'CityStepsController');
+    Route::post('city_steps_mass_destroy', ['uses' => 'CityStepsController@massDestroy', 'as' => 'city_steps.mass_destroy']);
 });

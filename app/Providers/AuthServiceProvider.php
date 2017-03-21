@@ -129,5 +129,19 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role_id, [1]);
         });
 
+        // Auth gates for: City steps
+        Gate::define('city_step_access', function ($user) {
+            return in_array($user->role_id, [1]);
+        });
+        Gate::define('city_step_create', function ($user) {
+            return in_array($user->role_id, [1]);
+        });
+        Gate::define('city_step_edit', function ($user) {
+            return in_array($user->role_id, [1]);
+        });
+        Gate::define('city_step_delete', function ($user) {
+            return in_array($user->role_id, [1]);
+        });
+
     }
 }
