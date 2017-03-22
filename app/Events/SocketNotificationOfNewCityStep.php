@@ -2,29 +2,26 @@
 
 namespace App\Events;
 
-use App\Language;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SocketSendTestMessage implements ShouldBroadcast
+class SocketNotificationOfNewCityStep implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-
-    public $message;
-    public $language;
+    public $city_step;
 
     /**
      * Create a new event instance.
-     * @param $message
+     *
+     * @return void
      */
-    public function __construct($message)
+    public function __construct($city_step)
     {
-        $this->message = $message;
-        $this->language  = Language::all()->first();
+        $this->city_step = $city_step;
     }
 
     /**

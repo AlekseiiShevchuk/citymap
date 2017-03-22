@@ -33,4 +33,5 @@ class AuthenticateByDeviceId
         }
         return $next($request);
     }
+
 }

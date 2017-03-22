@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\City;
+use App\CityStep;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\FileUploadTrait;
 use App\Http\Requests\UpdatePlayersRequest;
 use App\Player;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 
 class PlayersController extends Controller
 {
@@ -19,7 +23,7 @@ class PlayersController extends Controller
 
     public function showProfile()
     {
-        return Auth::user();
+        return Auth::user()->load('city_steps');
     }
 
     public function update(UpdatePlayersRequest $request)
@@ -37,25 +41,17 @@ class PlayersController extends Controller
         return Auth::user();
     }
 
-    /*public function update(UpdatePlayersRequest $request, $id)
+    public function stepToCity(City $city)
     {
-        $player = Player::findOrFail($id);
-        $player->update($request->all());
-
-        return $player;
+        $city_step = CityStep::create([
+            'by_player_id' => Auth::user()->id,
+            'to_city_id' => $city->id
+        ]);
+        return Auth::user()->load('city_steps');
     }
 
-    public function store(StorePlayersRequest $request)
+    public function getOnlinePlayers()
     {
-        $player = Player::create($request->all());
-
-        return $player;
+        return Cache::many(Redis::keys('citymap.players:*'));
     }
-
-    public function destroy($id)
-    {
-        $player = Player::findOrFail($id);
-        $player->delete();
-        return '';
-    }*/
 }

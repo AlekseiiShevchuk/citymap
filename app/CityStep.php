@@ -2,6 +2,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class CityStep
@@ -13,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 class CityStep extends Model
 {
     protected $fillable = ['by_player_id', 'to_city_id'];
+
+    protected $hidden = ['updated_at'];
     
 
     /**
@@ -41,6 +44,20 @@ class CityStep extends Model
     public function to_city()
     {
         return $this->belongsTo(City::class, 'to_city_id');
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('sort_by_created_date', function (Builder $builder) {
+            $builder->orderBy('created_at', 'desc');
+        });
     }
     
 }

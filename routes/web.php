@@ -23,6 +23,7 @@ Route::get('/set-random-weight', function () {
     }
 
 });
+
 // TMP Routs END
 
 Route::get('/', function () {

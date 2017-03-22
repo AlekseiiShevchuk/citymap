@@ -12,6 +12,8 @@ Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1', 'as' => 'api.'], funct
             Route::get('profile', 'PlayersController@showProfile');
             Route::put('profile', 'PlayersController@update');
             Route::post('profile', 'PlayersController@uploadAvatar');
+            Route::get('step-to-city/{city}', 'PlayersController@stepToCity');
+            Route::get('get-online-players', 'PlayersController@getOnlinePlayers');
 
         Route::resource('city_steps', 'CityStepsController');
 
