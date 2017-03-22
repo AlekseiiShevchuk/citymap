@@ -44,7 +44,7 @@ class PlayersController extends Controller
     public function stepToCity(City $city)
     {
         $city_step = CityStep::create([
-            'by_player_id' => Auth::user()->id,
+            'by_player_id' => Auth::id(),
             'to_city_id' => $city->id
         ]);
         return Auth::user()->load('city_steps');

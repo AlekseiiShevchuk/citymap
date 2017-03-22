@@ -25,7 +25,7 @@ class PlayerObserver
     {
         CityStep::create([
             'by_player_id' => $player->id,
-            'to_city_id' => City::all()->random(1)->first()->id
+            'to_city_id' => City::inRandomOrder()->first()->id
         ]);
     }
 
