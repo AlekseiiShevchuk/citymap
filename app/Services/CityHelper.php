@@ -20,14 +20,16 @@ class CityHelper
             $address[$language->id]['description'] = '';
         }
         if (request()->has('address')) {
-            $cityPopulation = CityPopulation::where('city', request()->get('address'))->first();
+            $cityPopulation = file_get_contents('https://api.wolframalpha.com/v2/result?i='.request()->get('address').'+population&appid=VJRA2U-KPQHVHGLP2');
             $address_google_data = json_decode(file_get_contents('http://maps.google.com/maps/api/geocode/json?address=' . request()->get('address') . '&sensor=false'));
             $address['lat'] = $address_google_data->results[0]->geometry->location->lat;
             $address['lng'] = $address_google_data->results[0]->geometry->location->lng;
             $address['name'] = request()->get('address');
 
-            if ($cityPopulation instanceof CityPopulation) {
-                $address['population'] = $cityPopulation->population;
+            if (stristr($cityPopulation, 'million people')) {
+                $address['population'] = (int)(((float)$cityPopulation)*1000000);
+            }elseif(stristr($cityPopulation, 'people')){
+                $address['population'] = (int)$cityPopulation;
             }
 
             foreach ($languages as $language) {
@@ -37,8 +39,12 @@ class CityHelper
                     ), true
                 )['query']['pages'];
                 $data = $data[key($data)];
+                if(!empty($data['title'])){
                 $address[$language->id]['name'] = $data['title'];
+                }
+                if(!empty($data['extract'])){
                 $address[$language->id]['description'] = $data['extract'];
+                }
             }
         }
         return $address;
