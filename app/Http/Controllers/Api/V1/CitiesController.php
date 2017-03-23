@@ -17,7 +17,7 @@ class CitiesController extends Controller
 
     public function show($id)
     {
-        return City::findOrFail($id)->load(['localized_data.language']);
+        return City::findOrFail($id)->load(['localized_data']);
     }
 
    /* public function update(UpdateCitiesRequest $request, $id)
