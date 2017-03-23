@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\City;
-use App\Language;
-use App\LocalizedCityDatum;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StoreCitiesRequest;
 use App\Http\Requests\UpdateCitiesRequest;
+use App\Language;
+use App\LocalizedCityDatum;
+use App\Services\CityHelper;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CitiesController extends Controller
 {
@@ -19,7 +20,7 @@ class CitiesController extends Controller
      */
     public function index()
     {
-        if (! Gate::allows('city_access')) {
+        if (!Gate::allows('city_access')) {
             return abort(401);
         }
         $cities = City::all();
@@ -32,14 +33,16 @@ class CitiesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        if (! Gate::allows('city_create')) {
+        if (!Gate::allows('city_create')) {
             return abort(401);
         }
         $relations = [
-            'languages' => Language::where('is_active_for_admin',1)->get(),
+            'languages' => Language::where('is_active_for_admin', 1)->get(),
         ];
+
+        $relations['address'] = CityHelper::preFillCityData($relations['languages']);
 
         return view('cities.create', $relations);
     }
@@ -47,17 +50,17 @@ class CitiesController extends Controller
     /**
      * Store a newly created City in storage.
      *
-     * @param  \App\Http\Requests\StoreCitiesRequest  $request
+     * @param  \App\Http\Requests\StoreCitiesRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreCitiesRequest $request)
     {
-        if (! Gate::allows('city_create')) {
+        if (!Gate::allows('city_create')) {
             return abort(401);
         }
         $city = City::create($request->all());
 
-        foreach ($request->get('languages') as $language_id => $inputLocalizedData){
+        foreach ($request->get('languages') as $language_id => $inputLocalizedData) {
             LocalizedCityDatum::create([
                 'name' => $inputLocalizedData['name'],
                 'description' => $inputLocalizedData['description'],
@@ -73,12 +76,12 @@ class CitiesController extends Controller
     /**
      * Show the form for editing City.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        if (! Gate::allows('city_edit')) {
+        if (!Gate::allows('city_edit')) {
             return abort(401);
         }
         $relations = [
@@ -93,24 +96,24 @@ class CitiesController extends Controller
     /**
      * Update City in storage.
      *
-     * @param  \App\Http\Requests\UpdateCitiesRequest  $request
-     * @param  int  $id
+     * @param  \App\Http\Requests\UpdateCitiesRequest $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateCitiesRequest $request, $id)
     {
 
-        if (! Gate::allows('city_edit')) {
+        if (!Gate::allows('city_edit')) {
             return abort(401);
         }
 
         $city = City::findOrFail($id);
         $city->update($request->all());
 
-        foreach ($request->input('cities_to_go') as $city_to_go_id => $values){
+        foreach ($request->input('cities_to_go') as $city_to_go_id => $values) {
             $city_to_go = $city->cities_to_go->find($city_to_go_id);
             $city_to_go->pivot->weight = $values['weight'];
-            if(isset($values['is_possible_to_get'])){
+            if (isset($values['is_possible_to_get'])) {
                 $city_to_go->pivot->is_possible_to_get = $values['is_possible_to_get'];
             }
             $city_to_go->pivot->save();
@@ -123,12 +126,12 @@ class CitiesController extends Controller
     /**
      * Display City.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        if (! Gate::allows('city_view')) {
+        if (!Gate::allows('city_view')) {
             return abort(401);
         }
         $relations = [
@@ -145,12 +148,12 @@ class CitiesController extends Controller
     /**
      * Remove City from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        if (! Gate::allows('city_delete')) {
+        if (!Gate::allows('city_delete')) {
             return abort(401);
         }
         $city = City::findOrFail($id);
@@ -166,7 +169,7 @@ class CitiesController extends Controller
      */
     public function massDestroy(Request $request)
     {
-        if (! Gate::allows('city_delete')) {
+        if (!Gate::allows('city_delete')) {
             return abort(401);
         }
         if ($request->input('ids')) {

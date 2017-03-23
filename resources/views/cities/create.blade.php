@@ -8,12 +8,20 @@
         <div class="panel-heading">
             @lang('quickadmin.qa_create')
         </div>
-        
+
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('name_en', 'Name (in English)*', ['class' => 'control-label']) !!}
-                    {!! Form::text('name_en', old('name_en'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::text('name_en', $address['name'] ? $address['name']:old('name_en'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    <button onclick="go();return false;">Fill</button>
+                    <script>
+                        function go() {
+                            var name = $('[name="name_en"]').val();
+                            var url = "{{route('cities.create')}}?address="+ name;
+                            $(location).attr('href',url);
+                        }
+                    </script>
                     <p class="help-block"></p>
                     @if($errors->has('name_en'))
                         <p class="help-block">
@@ -25,7 +33,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('population', 'Population', ['class' => 'control-label']) !!}
-                    {!! Form::number('population', old('population'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::number('population', $address['population'] ? $address['population']:old('population'), ['class' => 'form-control', 'placeholder' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('population'))
                         <p class="help-block">
@@ -49,7 +57,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('latitude', 'Latitude*', ['class' => 'control-label']) !!}
-                    {!! Form::text('latitude', old('latitude'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::text('latitude', $address['lat'] ? $address['lat']:old('latitude'), ['class' => 'form-control', 'placeholder' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('latitude'))
                         <p class="help-block">
@@ -61,7 +69,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('longitude', 'Longitude*', ['class' => 'control-label']) !!}
-                    {!! Form::text('longitude', old('longitude'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::text('longitude', $address['lng'] ? $address['lng']:old('longitude'), ['class' => 'form-control', 'placeholder' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('longitude'))
                         <p class="help-block">
@@ -80,7 +88,9 @@
                 <div class="row">
                     <div class="col-xs-12 form-group">
                         {!! Form::label('name', 'Localized Name for ' . $language->name.' language*', ['class' => 'control-label']) !!}
-                        {!! Form::text('languages[' .$language->id . '][name]', old('languages[' .$language->abbreviation . '][name]'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                        {!! Form::text('languages[' .$language->id . '][name]',
+                        $address[$language->id]['name'] ? $address[$language->id]['name']:old('languages[' .$language->abbreviation . '][name]'),
+                         ['class' => 'form-control', 'placeholder' => '']) !!}
                         <p class="help-block"></p>
                         @if($errors->has('languages.' .$language->id . '.name'))
                             <p class="help-block">
@@ -92,7 +102,8 @@
                 <div class="row">
                     <div class="col-xs-12 form-group">
                         {!! Form::label('description', 'Localized Description for ' . $language->name.' language*', ['class' => 'control-label']) !!}
-                        {!! Form::textarea('languages[' .$language->id . '][description]', old('languages[' .$language->abbreviation . '][description]'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                        {!! Form::textarea('languages[' .$language->id . '][description]',
+                        $address[$language->id]['description'] ? $address[$language->id]['description']:old('languages[' .$language->abbreviation . '][description]'), ['class' => 'form-control', 'placeholder' => '']) !!}
                         <p class="help-block"></p>
                         @if($errors->has('languages.' .$language->id . '.description'))
                             <p class="help-block">
