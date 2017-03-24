@@ -61,12 +61,14 @@ class PlayersController extends Controller
     public function login()
     {
         event(new SocketNotification(SocketNotification::PLAYER_LOGIN, Auth::user()));
+        return response()->json('success login');
     }
 
     public function logout()
     {
         event(new SocketNotification(SocketNotification::PLAYER_LOGOUT, Auth::user()));
         Cache::forget(OnlinePlayersService::CACHE_PREFIX . Auth::id());
+        return response()->json('success logout');
     }
 }
 
