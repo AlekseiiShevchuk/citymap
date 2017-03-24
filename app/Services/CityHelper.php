@@ -3,8 +3,6 @@
 namespace App\Services;
 
 
-use App\CityPopulation;
-
 class CityHelper
 {
     public static function preFillCityData($languages)
@@ -20,15 +18,15 @@ class CityHelper
             $address[$language->id]['description'] = '';
         }
         if (request()->has('address')) {
-            $cityPopulation = file_get_contents('https://api.wolframalpha.com/v2/result?i='.request()->get('address').'+population&appid=VJRA2U-KPQHVHGLP2');
+            $cityPopulation = file_get_contents('http://api.wolframalpha.com/v2/result?i=' . request()->get('address') . '+population&appid=' . env('wolframalpha_API_KEY'));
             $address_google_data = json_decode(file_get_contents('http://maps.google.com/maps/api/geocode/json?address=' . request()->get('address') . '&sensor=false'));
             $address['lat'] = $address_google_data->results[0]->geometry->location->lat;
             $address['lng'] = $address_google_data->results[0]->geometry->location->lng;
             $address['name'] = request()->get('address');
 
             if (stristr($cityPopulation, 'million people')) {
-                $address['population'] = (int)(((float)$cityPopulation)*1000000);
-            }elseif(stristr($cityPopulation, 'people')){
+                $address['population'] = (int)(((float)$cityPopulation) * 1000000);
+            } elseif (stristr($cityPopulation, 'people')) {
                 $address['population'] = (int)$cityPopulation;
             }
 
@@ -39,11 +37,11 @@ class CityHelper
                     ), true
                 )['query']['pages'];
                 $data = $data[key($data)];
-                if(!empty($data['title'])){
-                $address[$language->id]['name'] = $data['title'];
+                if (!empty($data['title'])) {
+                    $address[$language->id]['name'] = $data['title'];
                 }
-                if(!empty($data['extract'])){
-                $address[$language->id]['description'] = $data['extract'];
+                if (!empty($data['extract'])) {
+                    $address[$language->id]['description'] = $data['extract'];
                 }
             }
         }
