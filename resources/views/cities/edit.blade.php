@@ -78,7 +78,12 @@
                         <hr>
                         <h3>{{$city_to_go->name_en}}</h3>
                         {!! Form::label('select weight', 'Select weight:', ['class' => 'control-label']) !!}
-                        {!! Form::number('cities_to_go[' . $city_to_go->id . '][' . 'weight]', $city_to_go->weight, ['class' => 'form-control', 'placeholder' => 'weight']) !!}
+                        {!! Form::number('cities_to_go[' . $city_to_go->id . '][' . 'weight]', $city_to_go->weight,
+                        [
+                        'class' => 'form-control',
+                        'placeholder' => 'weight',
+                        'min' => '0'
+                        ]) !!}
                         {!! Form::label('is possible to get', 'Is it possible to get ' . $city_to_go->name_en  .' from ' . $city->name_en, ['class' => 'control-label']) !!}
                         {!! Form::checkbox('cities_to_go[' . $city_to_go->id . '][' . 'is_possible_to_get]', 1, $city_to_go->is_possible_to_get) !!}
                     @endforeach
