@@ -24,7 +24,7 @@ trait FileUploadTrait
             if ($request->hasFile($key)) {
                 if ($request->has($key . '_max_width') && $request->has($key . '_max_height')) {
                     // Check file width
-                    $filename = time() . '-' . $request->file($key)->getClientOriginalName();
+                    $filename = microtime() . '.' . $request->file($key)->getClientOriginalExtension();
                     $file     = $request->file($key);
                     $image    = Image::make($file);
                     if (! file_exists(public_path('uploads/thumb'))) {
@@ -47,7 +47,7 @@ trait FileUploadTrait
                     $image->save(public_path('uploads') . '/' . $filename);
                     $finalRequest = new Request(array_merge($finalRequest->all(), [$key => $filename]));
                 } else {
-                    $filename = time() . '-' . $request->file($key)->getClientOriginalName();
+                    $filename = microtime() . '.' . $request->file($key)->getClientOriginalExtension();
                     $request->file($key)->move(public_path('uploads'), $filename);
                     $finalRequest = new Request(array_merge($finalRequest->all(), [$key => $filename]));
                 }
