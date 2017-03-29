@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Contracts\HasCoordinates;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
  * @property double $latitude
  * @property double $longitude
  */
-class City extends Model
+class City extends Model implements HasCoordinates
 {
     protected $fillable = ['name_en', 'population', 'year_of_foundation', 'latitude', 'longitude'];
 
@@ -28,6 +29,7 @@ class City extends Model
         'localized_data',
         'cities_to_go',
         'weight',
+        'points',
         'is_possible_to_get',
         'possible_cities_to_go',
         'updated_at'
@@ -80,17 +82,18 @@ class City extends Model
     public function cities_to_go()
     {
         return $this->belongsToMany(City::class, 'city_city_to_go', 'city_id', 'city_to_go_id')
-            ->withPivot(['weight', 'is_possible_to_get'])->select(['id', 'name_en', 'weight', 'is_possible_to_get']);
+            ->withPivot(['weight', 'is_possible_to_get','points'])->select(['id', 'name_en', 'weight', 'is_possible_to_get','points','latitude','longitude']);
     }
 
     public function possible_cities_to_go()
     {
         return $this->belongsToMany(City::class, 'city_city_to_go', 'city_id', 'city_to_go_id')
-            ->withPivot(['weight', 'is_possible_to_get'])->wherePivot('is_possible_to_get', 1)->select([
+            ->withPivot(['weight', 'is_possible_to_get','points'])->wherePivot('is_possible_to_get', 1)->select([
                 'id',
                 'name_en',
                 'weight',
-                'is_possible_to_get'
+                'is_possible_to_get',
+                'points'
             ]);
     }
 
@@ -103,4 +106,8 @@ class City extends Model
         }
     }
 
+    public function getCoordinates(): string
+    {
+        return $this->latitude . ',' . $this->longitude;
+    }
 }

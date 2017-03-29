@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\City;
+use App\Services\GoogleMapsAPI;
 
 class CityObserver
 {
@@ -20,9 +21,16 @@ class CityObserver
     public function created(City $city)
     {
         $cities = City::all();
-        foreach ($cities as $city){
+        foreach ($cities as $city) {
             $city->cities_to_go()->sync($cities);
             $city->cities_to_go()->detach($city);
+
+            foreach ($city->cities_to_go as $city_to_go) {
+                if ($city_to_go->pivot->points == null) {
+                    $city_to_go->pivot->points = GoogleMapsAPI::getPointsBetweenTwoCities($city, $city_to_go);
+                    $city_to_go->pivot->save();
+                }
+            }
         }
     }
 
