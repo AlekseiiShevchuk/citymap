@@ -115,6 +115,8 @@ class CitiesController extends Controller
             $city_to_go->pivot->weight = $values['weight'];
             if (isset($values['is_possible_to_get'])) {
                 $city_to_go->pivot->is_possible_to_get = $values['is_possible_to_get'];
+            }else{
+                $city_to_go->pivot->is_possible_to_get = 0;
             }
             $city_to_go->pivot->save();
         }
