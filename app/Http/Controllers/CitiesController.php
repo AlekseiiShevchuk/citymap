@@ -120,6 +120,8 @@ class CitiesController extends Controller
             }
             $city_to_go->pivot->save();
         }
+        $city->touch();
+        $city->save();
 
         return redirect()->route('cities.index');
     }
