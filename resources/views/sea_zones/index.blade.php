@@ -40,13 +40,10 @@
 
                                 <td>{{ $sea_zone->start_point_latitude }}</td>
                                 <td>{{ $sea_zone->start_point_longitude }}</td>
-                                <td>{{ $sea_zone->end_point_lalitude }}</td>
+                                <td>{{ $sea_zone->end_point_latitude }}</td>
                                 <td>{{ $sea_zone->end_point_longitude }}</td>
-                                <td>{{ $sea_zone->city_transfer->points or '' }}</td>
+                                <td>{{ 'from ' . App\City::find($sea_zone->city_transfer->city_id)->name_en . ' to ' . App\City::find($sea_zone->city_transfer->city_to_go_id)->name_en }}</td>
                                 <td>
-                                    @can('sea_zone_view')
-                                    <a href="{{ route('sea_zones.show',[$sea_zone->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
-                                    @endcan
                                     @can('sea_zone_edit')
                                     <a href="{{ route('sea_zones.edit',[$sea_zone->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan

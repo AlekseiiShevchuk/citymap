@@ -17,15 +17,12 @@ class Create1491564563SeaZonesTable extends Migration
                 $table->increments('id');
                 $table->double('start_point_latitude', 8, 5)->nullable();
                 $table->double('start_point_longitude', 8, 5)->nullable();
-                $table->double('end_point_lalitude', 8, 5)->nullable();
+                $table->double('end_point_latitude', 8, 5)->nullable();
                 $table->double('end_point_longitude', 8, 5)->nullable();
                 $table->integer('city_transfer_id')->unsigned()->nullable();
                 $table->foreign('city_transfer_id', 'fk_28033_citytransfer_city_transfer_id_sea_zone')->references('id_city_transfer')->on('city_city_to_go')->onDelete('cascade');
                 
                 $table->timestamps();
-                $table->softDeletes();
-
-                $table->index(['deleted_at']);
             });
         }
     }

@@ -76,8 +76,12 @@ class SeaZonesController extends Controller
         if (! Gate::allows('sea_zone_edit')) {
             return abort(401);
         }
+        $city_transfers = new Collection();
+        foreach (CityTransfer::all() as $city_transfer){
+            $city_transfers->put($city_transfer->id_city_transfer, 'from ' . City::find($city_transfer->city_id)->name_en . ' to ' . City::find($city_transfer->city_to_go_id)->name_en );
+        }
         $relations = [
-            'city_transfers' => \App\CityTransfer::get()->pluck('points', 'id')->prepend('Please select', ''),
+            'city_transfers' => $city_transfers->prepend('Please select', ''),
         ];
 
         $sea_zone = SeaZone::findOrFail($id);

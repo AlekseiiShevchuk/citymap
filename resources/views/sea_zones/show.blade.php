@@ -22,7 +22,7 @@
                         </tr>
                         <tr>
                             <th>@lang('quickadmin.sea-zone.fields.end-point-lalitude')</th>
-                            <td>{{ $sea_zone->end_point_lalitude }}</td>
+                            <td>{{ $sea_zone->end_point_latitude }}</td>
                         </tr>
                         <tr>
                             <th>@lang('quickadmin.sea-zone.fields.end-point-longitude')</th>

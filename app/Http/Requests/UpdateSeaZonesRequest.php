@@ -26,7 +26,7 @@ class UpdateSeaZonesRequest extends FormRequest
             
             'start_point_latitude' => 'max:8|required',
             'start_point_longitude' => 'max:8|required',
-            'end_point_lalitude' => 'max:8|required',
+            'end_point_latitude' => 'max:8|required',
             'end_point_longitude' => 'max:8',
             'city_transfer_id' => 'required',
         ];

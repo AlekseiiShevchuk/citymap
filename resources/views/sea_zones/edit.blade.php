@@ -37,12 +37,12 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('end_point_lalitude', 'End point lalitude*', ['class' => 'control-label']) !!}
-                    {!! Form::text('end_point_lalitude', old('end_point_lalitude'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::label('end_point_latitude', 'End point lalitude*', ['class' => 'control-label']) !!}
+                    {!! Form::text('end_point_latitude', old('end_point_latitude'), ['class' => 'form-control', 'placeholder' => '']) !!}
                     <p class="help-block"></p>
-                    @if($errors->has('end_point_lalitude'))
+                    @if($errors->has('end_point_latitude'))
                         <p class="help-block">
-                            {{ $errors->first('end_point_lalitude') }}
+                            {{ $errors->first('end_point_latitude') }}
                         </p>
                     @endif
                 </div>
