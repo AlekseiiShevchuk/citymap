@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\City;
 use App\CityStep;
+use App\CityTransfer;
 use App\Observers\CityObserver;
 use App\Observers\CityStepObserver;
+use App\Observers\CityTransferObserver;
 use App\Observers\PlayerObserver;
 use App\Player;
 use Illuminate\Support\Facades\Schema;
@@ -21,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         City::observe(CityObserver::class);
+        CityTransfer::observe(CityTransferObserver::class);
         Player::observe(PlayerObserver::class);
         CityStep::observe(CityStepObserver::class);
         Schema::defaultStringLength(191);

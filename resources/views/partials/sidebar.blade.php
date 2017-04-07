@@ -84,6 +84,14 @@
             </a>
         </li>
     @endcan
+    @can('sea_zone_access')
+        <li class="{{ $request->segment(1) == 'sea_zones' ? 'active' : '' }}">
+            <a href="{{ route('sea_zones.index') }}">
+                <i class="fa fa-gears"></i>
+                <span class="title">@lang('quickadmin.sea-zone.title')</span>
+            </a>
+        </li>
+    @endcan
 
 
     <li>

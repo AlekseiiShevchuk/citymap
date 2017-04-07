@@ -74,19 +74,32 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('cities_to_go', 'Possible cities to go', ['class' => 'control-label']) !!}
+
                     @foreach($city->cities_to_go as $city_to_go)
                         <hr>
                         <h3>{{$city_to_go->name_en}}</h3>
-                        {!! Form::label('select weight', 'Select weight:', ['class' => 'control-label']) !!}
-                        {!! Form::number('cities_to_go[' . $city_to_go->id . '][' . 'weight]', $city_to_go->weight,
-                        [
-                        'class' => 'form-control',
-                        'placeholder' => 'weight',
-                        'min' => '0'
-                        ]) !!}
-                        {!! Form::label('is possible to get', 'Is it possible to get ' . $city_to_go->name_en  .' from ' . $city->name_en, ['class' => 'control-label']) !!}
-                        {!! Form::checkbox('cities_to_go[' . $city_to_go->id . '][' . 'is_possible_to_get]', 1, $city_to_go->is_possible_to_get) !!}
+                        {{--{!! Form::label('Set Price', 'Set Price:', ['class' => 'control-label']) !!}--}}
+                        {{--{!! Form::number('cities_to_go[' . $city_to_go->id . '][' . 'weight]', $city_to_go->weight, ['class' => 'form-control', 'placeholder' => 'weight','min' => '0' ]) !!}--}}
+                        {{--{!! Form::label('is possible to get', 'Is it possible to get ' . $city_to_go->name_en  .' from ' . $city->name_en, ['class' => 'control-label']) !!}--}}
+                        {{--{!! Form::checkbox('cities_to_go[' . $city_to_go->id . '][' . 'is_possible_to_get]', 1, $city_to_go->is_possible_to_get) !!}--}}
+
+                        {!! Form::label('set price by car', 'Set Price by car:', ['class' => 'control-label']) !!}
+                        {!! Form::number('cities_to_go[' . $city_to_go->id . '][' . 'price_by_car]', $city_to_go->price_by_car, ['class' => 'form-control', 'placeholder' => 'price by car','min' => '0' ]) !!}
+                        {!! Form::label('is possible to get by car', 'Is it possible to get ' . $city_to_go->name_en  .' from ' . $city->name_en . ' by car', ['class' => 'control-label']) !!}
+                        {!! Form::checkbox('cities_to_go[' . $city_to_go->id . '][' . 'is_possible_to_get_by_car]', 1, $city_to_go->is_possible_to_get_by_car) !!}
+                        <br><hr>
+                        {!! Form::label('set price by train', 'Set Price by train:', ['class' => 'control-label']) !!}
+                        {!! Form::number('cities_to_go[' . $city_to_go->id . '][' . 'price_by_train]', $city_to_go->price_by_train, ['class' => 'form-control', 'placeholder' => 'price by train','min' => '0' ]) !!}
+                        {!! Form::label('is possible to get by train', 'Is it possible to get ' . $city_to_go->name_en  .' from ' . $city->name_en . ' by train', ['class' => 'control-label']) !!}
+                        {!! Form::checkbox('cities_to_go[' . $city_to_go->id . '][' . 'is_possible_to_get_by_train]', 1, $city_to_go->is_possible_to_get_by_train) !!}
+                        <br><hr>
+                        {!! Form::label('set price by plane', 'Set Price by plane:', ['class' => 'control-label']) !!}
+                        {!! Form::number('cities_to_go[' . $city_to_go->id . '][' . 'price_by_plane]', $city_to_go->price_by_plane, ['class' => 'form-control', 'placeholder' => 'price by plane','min' => '0' ]) !!}
+                        {!! Form::label('is possible to get by plane', 'Is it possible to get ' . $city_to_go->name_en  .' from ' . $city->name_en . ' by plane', ['class' => 'control-label']) !!}
+                        {!! Form::checkbox('cities_to_go[' . $city_to_go->id . '][' . 'is_possible_to_get_by_plane]', 1, $city_to_go->is_possible_to_get_by_plane) !!}
+                        <br>
                     @endforeach
+
                 </div>
             </div>
         </div>

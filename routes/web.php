@@ -13,13 +13,15 @@ Route::get('/redis', function () {
 
 });
 //set random weight for each city to go
-Route::get('/set-random-weight', function () {
+Route::get('/set-random-price', function () {
 
     $cities = \App\City::all();
 
     foreach ($cities as $city) {
         foreach ($city->cities_to_go as $cityToGo) {
-            $cityToGo->pivot->weight = rand(10, 200);
+            $cityToGo->pivot->price_by_car = rand(10, 200);
+            $cityToGo->pivot->price_by_train = rand(10, 200);
+            $cityToGo->pivot->price_by_plane = rand(10, 200);
             $cityToGo->pivot->save();
         }
     }
@@ -89,4 +91,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('city_steps', 'CityStepsController');
     Route::post('city_steps_mass_destroy',
         ['uses' => 'CityStepsController@massDestroy', 'as' => 'city_steps.mass_destroy']);
+
+    Route::resource('sea_zones', 'SeaZonesController');
+    Route::post('sea_zones_mass_destroy', ['uses' => 'SeaZonesController@massDestroy', 'as' => 'sea_zones.mass_destroy']);
 });

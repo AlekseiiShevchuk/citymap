@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 use App\Contracts\HasCoordinates;
@@ -31,6 +32,12 @@ class City extends Model implements HasCoordinates
         'weight',
         'points',
         'is_possible_to_get',
+        'price_by_car',
+        'price_by_train',
+        'price_by_plane',
+        'is_possible_to_get_by_car',
+        'is_possible_to_get_by_train',
+        'is_possible_to_get_by_plane',
         'possible_cities_to_go',
         'updated_at'
     ];
@@ -82,17 +89,57 @@ class City extends Model implements HasCoordinates
     public function cities_to_go()
     {
         return $this->belongsToMany(City::class, 'city_city_to_go', 'city_id', 'city_to_go_id')
-            ->withPivot(['weight', 'is_possible_to_get','points'])->select(['id', 'name_en', 'weight', 'is_possible_to_get','points','latitude','longitude']);
+            ->withPivot([
+                'weight',
+                'is_possible_to_get',
+                'points',
+                'price_by_car',
+                'price_by_train',
+                'price_by_plane',
+                'is_possible_to_get_by_car',
+                'is_possible_to_get_by_train',
+                'is_possible_to_get_by_plane'
+            ])->select([
+                'id',
+                'name_en',
+                'weight',
+                'is_possible_to_get',
+                'price_by_car',
+                'price_by_train',
+                'price_by_plane',
+                'is_possible_to_get_by_car',
+                'is_possible_to_get_by_train',
+                'is_possible_to_get_by_plane',
+                'points',
+                'latitude',
+                'longitude'
+            ]);
     }
 
     public function possible_cities_to_go()
     {
         return $this->belongsToMany(City::class, 'city_city_to_go', 'city_id', 'city_to_go_id')
-            ->withPivot(['weight', 'is_possible_to_get','points'])->wherePivot('is_possible_to_get', 1)->select([
+            ->withPivot([
+                'weight',
+                'is_possible_to_get',
+                'price_by_car',
+                'price_by_train',
+                'price_by_plane',
+                'is_possible_to_get_by_car',
+                'is_possible_to_get_by_train',
+                'is_possible_to_get_by_plane',
+                'points'
+            ])->wherePivot('is_possible_to_get', 1)->select([
                 'id',
                 'name_en',
                 'weight',
                 'is_possible_to_get',
+                'price_by_car',
+                'price_by_train',
+                'price_by_plane',
+                'is_possible_to_get_by_car',
+                'is_possible_to_get_by_train',
+                'is_possible_to_get_by_plane',
                 'points'
             ]);
     }

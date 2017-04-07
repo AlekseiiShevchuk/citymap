@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\CityTransfer;
 use App\Http\Requests\StoreCitiesRequest;
 use App\Http\Requests\UpdateCitiesRequest;
 use App\Language;
@@ -111,14 +112,41 @@ class CitiesController extends Controller
         $city->update($request->all());
 
         foreach ($request->input('cities_to_go') as $city_to_go_id => $values) {
-            $city_to_go = $city->cities_to_go->find($city_to_go_id);
-            $city_to_go->pivot->weight = $values['weight'];
-            if (isset($values['is_possible_to_get'])) {
-                $city_to_go->pivot->is_possible_to_get = $values['is_possible_to_get'];
-            }else{
-                $city_to_go->pivot->is_possible_to_get = 0;
+
+            $cityTransfer = CityTransfer::where([
+                'city_id' => $city->id,
+                'city_to_go_id' => $city_to_go_id
+            ])->get()->first();
+
+            $reverseCityTransfer = CityTransfer::where([
+                'city_id' => $city_to_go_id,
+                'city_to_go_id' => $city->id
+            ])->get()->first();
+
+            $cityTransfer->price_by_car = $values['price_by_car'];
+            $cityTransfer->price_by_train = $values['price_by_train'];
+            $cityTransfer->price_by_plane = $values['price_by_plane'];
+
+            if (isset($values['is_possible_to_get_by_car'])) {
+                $cityTransfer->is_possible_to_get_by_car = $values['is_possible_to_get_by_car'];
+            } else {
+                $cityTransfer->is_possible_to_get_by_car = 0;
             }
-            $city_to_go->pivot->save();
+
+            if (isset($values['is_possible_to_get_by_train'])) {
+                $cityTransfer->is_possible_to_get_by_train = $values['is_possible_to_get_by_train'];
+            } else {
+                $cityTransfer->is_possible_to_get_by_train = 0;
+            }
+
+            if (isset($values['is_possible_to_get_by_plane'])) {
+                $cityTransfer->is_possible_to_get_by_plane = $values['is_possible_to_get_by_plane'];
+            } else {
+                $cityTransfer->is_possible_to_get_by_plane = 0;
+            }
+
+            $cityTransfer->save();
+            $reverseCityTransfer->synchronizeSettings($cityTransfer);
         }
         $city->touch();
         $city->save();

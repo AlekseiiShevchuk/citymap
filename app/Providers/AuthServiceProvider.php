@@ -143,5 +143,21 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role_id, [1]);
         });
 
+        // Auth gates for: Sea zone
+        Gate::define('sea_zone_access', function ($user) {
+            return in_array($user->role_id, [1]);
+        });
+        Gate::define('sea_zone_create', function ($user) {
+            return in_array($user->role_id, [1]);
+        });
+        Gate::define('sea_zone_edit', function ($user) {
+            return in_array($user->role_id, [1]);
+        });
+        Gate::define('sea_zone_view', function ($user) {
+            return in_array($user->role_id, [1]);
+        });
+        Gate::define('sea_zone_delete', function ($user) {
+            return in_array($user->role_id, [1]);
+        });
     }
 }
