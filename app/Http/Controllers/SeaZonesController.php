@@ -40,7 +40,7 @@ class SeaZonesController extends Controller
         }
         $city_transfers = new Collection();
         foreach (CityTransfer::all() as $city_transfer){
-            $city_transfers->put($city_transfer->id, 'from ' . City::find($city_transfer->city_id)->name_en . ' to ' . City::find($city_transfer->city_to_go_id)->name_en );
+            $city_transfers->put($city_transfer->id_city_transfer, 'from ' . City::find($city_transfer->city_id)->name_en . ' to ' . City::find($city_transfer->city_to_go_id)->name_en );
         }
         $relations = [
             'city_transfers' => $city_transfers->prepend('Please select', ''),

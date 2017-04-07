@@ -12,7 +12,7 @@ class CitiesController extends Controller
 {
     public function index()
     {
-        return City::all()->load(['possible_cities_to_go']);
+        return City::all()->load(['possible_cities_to_go.sea_zones']);
     }
 
     public function show($id)
