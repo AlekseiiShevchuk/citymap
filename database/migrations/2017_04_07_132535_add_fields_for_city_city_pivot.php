@@ -14,9 +14,9 @@ class AddFieldsForCityCityPivot extends Migration
     public function up()
     {
         Schema::table('city_city_to_go', function (Blueprint $table) {
-            $table->increments('id');
-            $table->tinyInteger('is_possible_to_get_by_bus')->default(1);
-            $table->integer('price_by_bus')->unsigned()->default(10);
+            $table->increments('id_city_transfer');
+            $table->tinyInteger('is_possible_to_get_by_car')->default(1);
+            $table->integer('price_by_car')->unsigned()->default(10);
             $table->tinyInteger('is_possible_to_get_by_train')->default(1);
             $table->integer('price_by_train')->unsigned()->default(10);
             $table->tinyInteger('is_possible_to_get_by_plane')->default(1);
