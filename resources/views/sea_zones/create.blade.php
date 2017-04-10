@@ -8,7 +8,9 @@
         <div class="panel-heading">
             @lang('quickadmin.qa_create')
         </div>
-        
+
+    <div class="alert-danger">Use a dot as a separator between integer and fractional part</div>
+
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 form-group">
