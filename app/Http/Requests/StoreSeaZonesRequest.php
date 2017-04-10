@@ -23,10 +23,10 @@ class StoreSeaZonesRequest extends FormRequest
     public function rules()
     {
         return [
-            'start_point_latitude' => 'max:8|required',
-            'start_point_longitude' => 'max:8|required',
-            'end_point_latitude' => 'max:8|required',
-            'end_point_longitude' => 'max:8',
+            'start_point_latitude' => 'max:8|required|regex:/^\d*\.{0,1}\d*$/',
+            'start_point_longitude' => 'max:8|required|regex:/^\d*\.{0,1}\d*$/',
+            'end_point_latitude' => 'max:8|required|regex:/^\d*\.{0,1}\d*$/',
+            'end_point_longitude' => 'max:8|regex:/^\d*\.{0,1}\d*$/',
             'city_transfer_id' => 'required',
         ];
     }
