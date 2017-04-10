@@ -26,6 +26,13 @@ Route::get('/set-random-price', function () {
         }
     }
 
+    $cityTransfers = \App\CityTransfer::all();
+
+    foreach ($cityTransfers as $cityTransfer)
+    {
+        $cityTransfer->save();
+    }
+
 });
 
 Route::get('google-api-test', function () {
