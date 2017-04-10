@@ -30,9 +30,9 @@ Route::get('/set-random-price', function () {
 
     foreach ($cityTransfers as $cityTransfer)
     {
-        $cityTransfer->is_possible_to_get_by_car = rand(0,1);
-        $cityTransfer->is_possible_to_get_by_train = rand(0,1);
-        $cityTransfer->is_possible_to_get_by_plane = rand(0,1);
+        $cityTransfer->is_possible_to_get_by_car = 0;
+        $cityTransfer->is_possible_to_get_by_train = 0;
+        $cityTransfer->is_possible_to_get_by_plane = 0;
         $cityTransfer->save();
     }
 
