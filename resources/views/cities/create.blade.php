@@ -35,6 +35,18 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
+                    {!! Form::label('country_id', 'Country*', ['class' => 'control-label']) !!}
+                    {!! Form::select('country_id', $countries, old('country_id'), ['class' => 'form-control select2']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('country_id'))
+                        <p class="help-block">
+                            {{ $errors->first('country_id') }}
+                        </p>
+                    @endif
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 form-group">
                     {!! Form::label('population', 'Population', ['class' => 'control-label']) !!}
                     {!! Form::number('population', $address['population'] ? $address['population']:old('population'), ['class' => 'form-control', 'placeholder' => '']) !!}
                     <p class="help-block"></p>

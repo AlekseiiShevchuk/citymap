@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\City;
 use App\CityTransfer;
+use App\Country;
 use App\Http\Requests\StoreCitiesRequest;
 use App\Http\Requests\UpdateCitiesRequest;
 use App\Language;
@@ -41,6 +42,7 @@ class CitiesController extends Controller
         }
         $relations = [
             'languages' => Language::where('is_active_for_admin', 1)->get(),
+            'countries' => Country::all()->pluck('name', 'id'),
         ];
 
         $relations['address'] = CityHelper::preFillCityData($relations['languages']);
@@ -87,6 +89,7 @@ class CitiesController extends Controller
         }
         $relations = [
             'cities_to_go' => \App\City::get()->pluck('name_en', 'id'),
+            'countries' => Country::all()->pluck('name', 'id'),
         ];
 
         $city = City::findOrFail($id);

@@ -22,6 +22,7 @@
                         @endcan
 
                         <th>@lang('quickadmin.cities.fields.name-en')</th>
+                        <th>Country</th>
                         <th>@lang('quickadmin.cities.fields.population')</th>
                         <th>@lang('quickadmin.cities.fields.year-of-foundation')</th>
                         <th>@lang('quickadmin.cities.fields.latitude')</th>
@@ -30,7 +31,6 @@
                         <th>&nbsp;</th>
                     </tr>
                 </thead>
-                
                 <tbody>
                     @if (count($cities) > 0)
                         @foreach ($cities as $city)
@@ -40,6 +40,7 @@
                                 @endcan
 
                                 <td>{{ $city->name_en }}</td>
+                                <td>{{ $city->country }}</td>
                                 <td>{{ $city->population }}</td>
                                 <td>{{ $city->year_of_foundation }}</td>
                                 <td>{{ $city->latitude }}</td>

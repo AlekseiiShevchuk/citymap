@@ -18,7 +18,11 @@ use Illuminate\Support\Facades\Auth;
  */
 class City extends Model implements HasCoordinates
 {
-    protected $fillable = ['name_en', 'population', 'year_of_foundation', 'latitude', 'longitude'];
+    protected $fillable = ['name_en', 'population', 'year_of_foundation', 'latitude', 'longitude', 'country_id'];
+
+    protected $appends = ['country'];
+
+    protected $attributes = ['country'];
 
     protected $visible = [
         'id',
@@ -39,7 +43,8 @@ class City extends Model implements HasCoordinates
         'is_possible_to_get_by_train',
         'is_possible_to_get_by_plane',
         'possible_cities_to_go',
-        'updated_at'
+        'updated_at',
+        'country'
     ];
 
     /**
@@ -58,6 +63,15 @@ class City extends Model implements HasCoordinates
     public function setYearOfFoundationAttribute($input)
     {
         $this->attributes['year_of_foundation'] = $input ? $input : null;
+    }
+
+    public function getCountryAttribute()
+    {
+        if ($this->country_object instanceof Country) {
+            return $this->country_object->name;
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -118,7 +132,7 @@ class City extends Model implements HasCoordinates
 
     public function possible_cities_to_go()
     {
-        return $this->hasMany(CityTransfer::class,'city_id')->where('is_possible_to_get', 1);
+        return $this->hasMany(CityTransfer::class, 'city_id')->where('is_possible_to_get', 1);
     }
 
     public function localized_data()
@@ -133,5 +147,10 @@ class City extends Model implements HasCoordinates
     public function getCoordinates(): string
     {
         return $this->latitude . ',' . $this->longitude;
+    }
+
+    public function country_object()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
     }
 }

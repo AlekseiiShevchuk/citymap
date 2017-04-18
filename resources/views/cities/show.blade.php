@@ -17,6 +17,10 @@
                             <td>{{ $city->name_en }}</td>
                         </tr>
                         <tr>
+                            <th>Country</th>
+                            <td>{{ $city->country }}</td>
+                        </tr>
+                        <tr>
                             <th>@lang('quickadmin.cities.fields.population')</th>
                             <td>{{ $city->population }}</td>
                         </tr>
