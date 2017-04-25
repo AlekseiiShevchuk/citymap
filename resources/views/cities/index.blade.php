@@ -5,6 +5,7 @@
     @can('city_create')
     <p>
         <a href="{{ route('cities.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
+        <a href="#" class="btn btn-default" data-toggle="modal" data-target="#myModal">Show by map</a>
     </p>
     @endcan
 
@@ -13,7 +14,28 @@
             @lang('quickadmin.qa_list')
         </div>
 
+        <!-- Modal -->
         <div class="panel-body">
+
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Map</h4>
+                        </div>
+                        <div id="map-content" class="modal-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal End-->
+
             <table class="table table-bordered table-striped {{ count($cities) > 0 ? 'datatable' : '' }} @can('city_delete') dt-select @endcan">
                 <thead>
                     <tr>
@@ -80,7 +102,9 @@
     </div>
 @stop
 
-@section('javascript') 
+@section('javascript')
+    <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ asset('js/cities.js') }}"></script>
     <script>
         @can('city_delete')
             window.route_mass_crud_entries_destroy = '{{ route('cities.mass_destroy') }}';
