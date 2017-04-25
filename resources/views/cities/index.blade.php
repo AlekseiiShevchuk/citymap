@@ -14,7 +14,7 @@
             @lang('quickadmin.qa_list')
         </div>
 
-        <!-- Modal -->
+        <!--Modal-->
         <div class="panel-body">
 
             <div class="modal fade" id="myModal" role="dialog">
@@ -34,7 +34,7 @@
                 </div>
             </div>
         </div>
-        <!-- Modal End-->
+        <!--Modal End-->
 
             <table class="table table-bordered table-striped {{ count($cities) > 0 ? 'datatable' : '' }} @can('city_delete') dt-select @endcan">
                 <thead>
