@@ -22,8 +22,6 @@ class City extends Model implements HasCoordinates
 
     protected $appends = ['country'];
 
-    protected $attributes = ['country'];
-
     protected $visible = [
         'id',
         'name_en',
