@@ -15,6 +15,11 @@ class CitiesController extends Controller
         return City::all()->load(['possible_cities_to_go.sea_zones']);
     }
 
+    public function indexForVisualAdmin()
+    {
+        return City::all()->load(['cities_to_go']);
+    }
+
     public function show($id)
     {
         return City::findOrFail($id)->load(['localized_data']);
