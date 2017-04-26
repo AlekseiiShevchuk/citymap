@@ -10,19 +10,23 @@ function initMap()
         processData: false,
         success: function (data) {
             for (i = 0; i < data.length; i++) {
-                var city = [];
-                var citiesToGo = [];
-
-                city.push(data[i].name_en);
-                city.push(data[i].latitude);
-                city.push(data[i].longitude);
+                var city = {
+                    id: data[i].id,
+                    name: data[i].name_en,
+                    latitude: data[i].latitude,
+                    longitude: data[i].longitude,
+                    citiesToGo: []
+                };
 
                 var dataCitiesToGo = data[i].possible_cities_to_go;
+
                 for (j = 0; j < dataCitiesToGo.length; j++) {
-                    citiesToGo.push(dataCitiesToGo[j].name_en);
+                    city.citiesToGo.push({
+                        id: dataCitiesToGo[j].id,
+                        name: dataCitiesToGo[j].name_en
+                    });
                 }
 
-                city.push(citiesToGo);
                 cities.push(city);
             }
 
@@ -33,15 +37,37 @@ function initMap()
                 center: {lat: 75.363, lng: 185.044}
             });
 
+            var badges = [];
             for (i = 0; i < cities.length; i++) {
                 var marker = new google.maps.Marker({
-                    position: {lat: cities[i][1], lng: cities[i][2]},
+                    position: {lat: cities[i].latitude, lng: cities[i].longitude},
                     map: map
                 });
 
+                var citiesToGo = cities[i].citiesToGo;
+
+                badges[i] = '';
+                for (j = 0; j < citiesToGo.length; j++) {
+                    badges[i] +=
+                        '<span class="badge" data-citytogo="' + citiesToGo[j].id +'">'
+                        + citiesToGo[j].name
+                        + '</span>';
+                }
+
                 google.maps.event.addListener(marker, 'click', (function(marker, i) {
                     return function() {
-                        infowindow.setContent('Cities to go: ' + ' ' + cities[i][3].join(', '));
+                        infowindow.setContent(
+                            '<div id="content" data-city="'+ cities[i].id +'">'+
+                            '<div id="bodyContent">'+
+                            '<div id="citiesToGo">' +
+                            '<h3>Cities to go: </h3>'+
+                            '<div id="citiesToGoBadges">'+
+                            badges[i]+
+                            '</div>'+
+                            '</div>'+
+                            '</div>'+
+                            '</div>'
+                        );
                         infowindow.open(map, marker);
                     }
                 })(marker, i));
