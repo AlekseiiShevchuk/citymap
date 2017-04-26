@@ -9,6 +9,7 @@
       name="viewport"/>
 <meta http-equiv="Content-type"
       content="text/html; charset=utf-8">
+<meta name="_token" content="<?php echo csrf_token() ?>"/>
 <link href="{{ asset('sbadmin/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 <link href="{{ asset('sbadmin/vendor/metisMenu/metisMenu.min.css') }}" rel="stylesheet">
 <link href="{{ asset('sbadmin/dist/css/sb-admin-2.css') }}" rel="stylesheet">

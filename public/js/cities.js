@@ -3,7 +3,7 @@ function initMap()
     var cities = [];
 
     $.ajax({
-        url: '/api/v1/cities',
+        url: '/api/v1/map/cities',
         headers: {
             'device-id':1
         },
@@ -15,16 +15,24 @@ function initMap()
                     name: data[i].name_en,
                     latitude: data[i].latitude,
                     longitude: data[i].longitude,
-                    citiesToGo: []
+                    citiesToGo: [],
+                    citiesToAdd: []
                 };
 
-                var dataCitiesToGo = data[i].possible_cities_to_go;
+                var dataCitiesToGo = data[i].cities_to_go;
 
                 for (j = 0; j < dataCitiesToGo.length; j++) {
-                    city.citiesToGo.push({
-                        id: dataCitiesToGo[j].id,
-                        name: dataCitiesToGo[j].name_en
-                    });
+                    if (!dataCitiesToGo[j].is_possible_to_get) {
+                        city.citiesToAdd.push({
+                            id: dataCitiesToGo[j].id,
+                            name: dataCitiesToGo[j].name_en
+                        });
+                    } else {
+                        city.citiesToGo.push({
+                            id: dataCitiesToGo[j].id,
+                            name: dataCitiesToGo[j].name_en
+                        });
+                    }
                 }
 
                 cities.push(city);
@@ -49,8 +57,11 @@ function initMap()
                 badges[i] = '';
                 for (j = 0; j < citiesToGo.length; j++) {
                     badges[i] +=
-                        '<span class="badge" data-citytogo="' + citiesToGo[j].id +'">'
+                        '<span class="badge" data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">'
                         + citiesToGo[j].name
+                        + '<span ' +
+                        'class="glyphicon glyphicon-trash delete-city-to-go" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'"></span>'
                         + '</span>';
                 }
 
@@ -75,3 +86,27 @@ function initMap()
         }
     });
 }
+
+$(document)
+    .on('dblclick', '.delete-city-to-go', function () {
+        var item = $(this);
+        var data = {
+            cityId: item.attr('data-cityid'),
+            cityToGo: item.attr('data-citytogo')
+        };
+
+        $.ajax({
+            url: '/ajax/delete-city-to-go',
+            method: "POST",
+            data: data,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            success: function (data) {
+                if (data.status) {
+                    $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]').remove();
+                }
+            }
+        });
+    })
+;
