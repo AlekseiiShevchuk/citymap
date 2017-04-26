@@ -24,18 +24,18 @@ function initMap()
 
                 city.push(citiesToGo);
                 cities.push(city);
+            }
 
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 2,
-                    center: {lat: 75.363, lng: 185.044}
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 2,
+                center: {lat: 75.363, lng: 185.044}
+            });
+
+            for (i = 0; i < cities.length; i++) {
+                var marker = new google.maps.Marker({
+                    position: {lat: cities[i][1], lng: cities[i][2]},
+                    map: map
                 });
-
-                for (i = 0; i < cities.length; i++) {
-                    var marker = new google.maps.Marker({
-                        position: {lat: cities[i][1], lng: cities[i][2]},
-                        map: map
-                    });
-                }
             }
         }
     });
