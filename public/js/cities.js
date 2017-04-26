@@ -11,7 +11,7 @@ function initMap()
         success: function (data) {
             for (i = 0; i < data.length; i++) {
                 var city = [];
-                var citiesToGo = '';
+                var citiesToGo = [];
 
                 city.push(data[i].name_en);
                 city.push(data[i].latitude);
@@ -19,10 +19,7 @@ function initMap()
 
                 var dataCitiesToGo = data[i].possible_cities_to_go;
                 for (j = 0; j < dataCitiesToGo.length; j++) {
-                    citiesToGo += dataCitiesToGo[j].name_en;
-                    if (j != dataCitiesToGo.length - 1) {
-                        citiesToGo += ', ';
-                    }
+                    citiesToGo.push(dataCitiesToGo[j].name_en);
                 }
 
                 city.push(citiesToGo);
@@ -44,7 +41,7 @@ function initMap()
 
                 google.maps.event.addListener(marker, 'click', (function(marker, i) {
                     return function() {
-                        infowindow.setContent('Cities to go: ' + ' ' + cities[i][3]);
+                        infowindow.setContent('Cities to go: ' + ' ' + cities[i][3].join(', '));
                         infowindow.open(map, marker);
                     }
                 })(marker, i));
