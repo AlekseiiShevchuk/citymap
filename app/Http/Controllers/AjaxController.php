@@ -44,7 +44,8 @@ class AjaxController extends Controller
                 'status' => true,
                 'city_id' => $request->cityId,
                 'city_to_go' => $request->cityToGo,
-                'typeId' => $request->type
+                'typeId' => $request->type,
+                'isPossibleToGet' => $model->is_possible_to_get
             ]);
         }
     }

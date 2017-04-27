@@ -132,11 +132,12 @@ $(document)
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.typeId != 4) {
+                    if (data.typeId == 4 || !data.isPossibleToGet) {
+                        $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
+                            .remove();
+                    } else {
                         $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
                             .removeClass('city-to-go').addClass('city-to-go-not-active');
-                    } else {
-                        $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]').remove();
                     }
                 }
             }
