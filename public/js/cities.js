@@ -102,7 +102,7 @@ function initMap()
                             '</h2>' +
                             '<div id="citiesToGo">' +
                             '<h3>Cities to go: </h3>'+
-                            '<div class="citiesToGoBadges" data-city="'+ cities[i].id +'">'+
+                            '<div class="citiesToGoBadges" data-cityid="'+ cities[i].id +'">'+
                             badges[i]+
                             '</div>'+
                             '</div>'+
@@ -118,14 +118,13 @@ function initMap()
                         combineCities.push(cities[i].id);
                         markers.push(marker);
                         marker.setIcon('http://maps.google.com/mapfiles/ms/icons/purple-dot.png');
-                        if (combineCities.length > 1) {
+                        if (combineCities.length > 1 && combineCities[0] != combineCities[1]) {
                             infowindow.setContent(
                                 '<div>' +
                                 '<h2>' +
                                 'Add ' + cities[i].name +
                                 '</h2>' +
                                 '<div id="addCityContent">' +
-                                '<form method="post" name="addCityForm">' +
                                 '<p>' +
                                 '<input type="checkbox" name="car" value="1">' +
                                  'By car' +
@@ -141,11 +140,14 @@ function initMap()
                                 '<input type="hidden" name="city" value="' + combineCities[0] +'">' +
                                 '<input type="hidden" name="cityToAdd" value="' + combineCities[1] +'">' +
                                 '<input type="submit" class="btn btn default add-city" value="Add">' +
-                                '</form>' +
                                 '</div>' +
                                 '</div>'
                             );
                             infowindow.open(map, marker);
+                        } else if (combineCities.length > 1 && combineCities[0] == combineCities[1]) {
+                            combineCities = [];
+                            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+                            markers = [];
                         }
                     }
                 })(marker, i));
@@ -155,6 +157,7 @@ function initMap()
                     for (i = 0; i < markers.length; i++) {
                         markers[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
                     }
+                    markers = [];
                 });
             }
         }
@@ -190,11 +193,10 @@ $(document)
             }
         });
     })
-    .on('submit', 'form[name=addCityForm]', function (e){
-        e.preventDefault();
+    .on('click', '.add-city', function () {
         var data = {
-            city: $("form[name=addCityForm] input[name=city]").val(),
-            cityToAdd: $("form[name=addCityForm] input[name=cityToAdd]").val(),
+            city: $("input[name=city]").val(),
+            cityToAdd: $("input[name=cityToAdd]").val(),
         };
 
         if ($('input[name=car]').prop('checked')) {
