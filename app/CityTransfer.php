@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class CityTransfer extends Model
 {
+    const GET_BY_CAR = 1;
+    const GET_BY_TRAIN = 2;
+    const GET_BY_PLAIN = 3;
+    const GET_BY_ALL_VEHICLES = 4;
+    
     protected $primaryKey = 'id_city_transfer';
     protected $table = 'city_city_to_go';
     public $timestamps = false;

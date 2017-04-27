@@ -62,13 +62,31 @@ function initMap()
 
                 badges[i] = '';
                 for (j = 0; j < citiesToGo.length; j++) {
+                    var carDeleteClass = citiesToGo[j].getByCar ? 'city-to-go' : 'city-to-go-not-active';
+                    var trainDeleteClass = citiesToGo[j].getByTrain ? 'city-to-go' : 'city-to-go-not-active';
+                    var plainDeleteClass = citiesToGo[j].getByPlain ? 'city-to-go' : 'city-to-go-not-active';
+
                     badges[i] +=
                         '<span class="badge" data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">'
-                        + citiesToGo[j].name
-                        + '<span ' +
-                        'class="glyphicon glyphicon-trash delete-city-to-go" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'"></span>'
-                        + '</span>';
+                        + citiesToGo[j].name + ' ' +
+                        '<span ' +
+                        'class="glyphicon glyphicon-bed ' + carDeleteClass +'" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1">' +
+                        '</span>' + ' ' +
+                        '<span ' +
+                        'class="glyphicon glyphicon-road ' + trainDeleteClass +'" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
+                        '</span>' + ' ' +
+                        '<span ' +
+                        'class="glyphicon glyphicon-plane ' + plainDeleteClass +'" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
+                        '</span>' + ' ' +
+                        '<span ' +
+                        'class="glyphicon glyphicon-trash city-to-go" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="4">' +
+                        '</span>' +
+                        '</span>'
+                    ;
                 }
 
                 google.maps.event.addListener(marker, 'click', (function(marker, i) {
@@ -76,6 +94,9 @@ function initMap()
                         infowindow.setContent(
                             '<div id="content" data-city="'+ cities[i].id +'">'+
                             '<div id="bodyContent">'+
+                            '<h2>' +
+                            cities[i].name +
+                            '</h2>' +
                             '<div id="citiesToGo">' +
                             '<h3>Cities to go: </h3>'+
                             '<div id="citiesToGoBadges">'+
@@ -94,11 +115,12 @@ function initMap()
 }
 
 $(document)
-    .on('dblclick', '.delete-city-to-go', function () {
+    .on('dblclick', '.city-to-go', function () {
         var item = $(this);
         var data = {
             cityId: item.attr('data-cityid'),
-            cityToGo: item.attr('data-citytogo')
+            cityToGo: item.attr('data-citytogo'),
+            type: item.attr('data-type')
         };
 
         $.ajax({
@@ -110,7 +132,12 @@ $(document)
             },
             success: function (data) {
                 if (data.status) {
-                    $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]').remove();
+                    if (data.typeId != 4) {
+                        $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
+                            .removeClass('city-to-go').addClass('city-to-go-not-active');
+                    } else {
+                        $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]').remove();
+                    }
                 }
             }
         });
