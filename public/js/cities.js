@@ -146,7 +146,7 @@ function initMap()
                     }
                 })(marker, i));
 
-                google.maps.event.addListener(infowindow,'closeclick',function(){
+                google.maps.event.addListener(infowindow,'closeclick',function(marker){
                     combineCities = [];
                 });
             }
