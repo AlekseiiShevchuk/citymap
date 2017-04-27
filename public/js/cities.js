@@ -2,6 +2,7 @@ function initMap()
 {
     var cities = [];
     combineCities = [];
+    markers = [];
 
     $.ajax({
         url: '/api/v1/map/cities',
@@ -56,7 +57,8 @@ function initMap()
             for (i = 0; i < cities.length; i++) {
                 var marker = new google.maps.Marker({
                     position: {lat: cities[i].latitude, lng: cities[i].longitude},
-                    map: map
+                    map: map,
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
                 });
 
                 var citiesToGo = cities[i].citiesToGo;
@@ -114,6 +116,8 @@ function initMap()
                 google.maps.event.addListener(marker, 'rightclick', (function(marker, i) {
                     return function() {
                         combineCities.push(cities[i].id);
+                        markers.push(marker);
+                        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/purple-dot.png');
                         if (combineCities.length > 1) {
                             infowindow.setContent(
                                 '<div>' +
@@ -146,8 +150,11 @@ function initMap()
                     }
                 })(marker, i));
 
-                google.maps.event.addListener(infowindow,'closeclick',function(marker){
+                google.maps.event.addListener(infowindow,'closeclick',function(){
                     combineCities = [];
+                    for (i = 0; i < markers.length; i++) {
+                        markers[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+                    }
                 });
             }
         }
@@ -211,6 +218,9 @@ $(document)
                 if (data.status) {
                     infowindow.close();
                     combineCities = [];
+                    for (i = 0; i < markers.length; i++) {
+                        markers[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+                    }
                 }
             }
         });
