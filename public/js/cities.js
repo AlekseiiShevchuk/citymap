@@ -46,9 +46,9 @@ function initMap()
                 cities.push(city);
             }
 
-            var infowindow = new google.maps.InfoWindow();
+            infowindow = new google.maps.InfoWindow();
 
-            var map = new google.maps.Map(document.getElementById('map'), {
+            map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 4,
                 center: {lat: 63.363, lng: 27.044}
             });
