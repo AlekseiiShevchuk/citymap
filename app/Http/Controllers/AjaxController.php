@@ -72,6 +72,9 @@ class AjaxController extends Controller
                 'status' => true,
                 'city_id' => $request->city,
                 'city_to_go' => $request->cityToAdd,
+                'getByCar' => isset($request->car) ? $request->car : 0,
+                'getByTrain' => isset($request->train) ? $request->train : 0,
+                'geyByPlain' => isset($request->plain) ? $request->plain : 0
             ]);
         }
     }

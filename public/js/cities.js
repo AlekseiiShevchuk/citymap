@@ -1,7 +1,7 @@
 function initMap()
 {
     var cities = [];
-    var combineCities = [];
+    combineCities = [];
 
     $.ajax({
         url: '/api/v1/map/cities',
@@ -93,14 +93,14 @@ function initMap()
                 google.maps.event.addListener(marker, 'click', (function(marker, i) {
                     return function() {
                         infowindow.setContent(
-                            '<div id="content" data-city="'+ cities[i].id +'">'+
+                            '<div id="content">'+
                             '<div id="bodyContent">'+
                             '<h2>' +
                             cities[i].name +
                             '</h2>' +
                             '<div id="citiesToGo">' +
                             '<h3>Cities to go: </h3>'+
-                            '<div id="citiesToGoBadges">'+
+                            '<div class="citiesToGoBadges" data-city="'+ cities[i].id +'">'+
                             badges[i]+
                             '</div>'+
                             '</div>'+
@@ -210,6 +210,7 @@ $(document)
             success: function (data) {
                 if (data.status) {
                     infowindow.close();
+                    combineCities = [];
                 }
             }
         });
