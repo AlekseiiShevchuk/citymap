@@ -221,6 +221,7 @@ $(document)
                     for (i = 0; i < markers.length; i++) {
                         markers[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
                     }
+                    markers = [];
                 }
             }
         });
