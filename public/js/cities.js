@@ -1,6 +1,6 @@
 var cities = [];
-var combineCities = [];
-var markers = [];
+combineCities = [];
+markers = [];
 
 function initMap()
 {
