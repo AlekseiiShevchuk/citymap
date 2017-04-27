@@ -45,7 +45,7 @@ function initMap()
                 cities.push(city);
             }
 
-            var infowindow = new google.maps.InfoWindow();
+            infowindow = new google.maps.InfoWindow();
 
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 2,
@@ -191,13 +191,13 @@ $(document)
         };
 
         if ($('input[name=car]').prop('checked')) {
-            data.car = true;
+            data.car = 1;
         }
         if ($('input[name=train]').prop('checked')) {
-            data.train = true;
+            data.train = 1;
         }
         if ($('input[name=plain]').prop('checked')) {
-            data.plain = true;
+            data.plain = 1;
         }
 
         $.ajax({
@@ -209,7 +209,7 @@ $(document)
             },
             success: function (data) {
                 if (data.status) {
-                    
+                    infowindow.close();
                 }
             }
         });

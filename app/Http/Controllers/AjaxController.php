@@ -15,7 +15,6 @@ class AjaxController extends Controller
      */
     public function deleteCityToGo(Request $request)
     {
-
         $model = CityTransfer::where([
             'city_id' => $request->cityId,
             'city_to_go_id' => $request->cityToGo
@@ -58,10 +57,22 @@ class AjaxController extends Controller
      */
     public function addCityToGo(Request $request)
     {
-        return response()->json([
-            'status' => true,
+        $model = CityTransfer::where([
             'city_id' => $request->city,
-            'city_to_go' => $request->cityToAdd,
-        ]);
+            'city_to_go_id' => $request->cityToAdd
+        ])->first();
+
+        if ($model instanceof CityTransfer) {
+            $model->is_possible_to_get_by_car = isset($request->car) ? $request->car : 0;
+            $model->is_possible_to_get_by_train = isset($request->train) ? $request->train : 0;
+            $model->is_possible_to_get_by_plane = isset($request->plain) ? $request->plain : 0;
+            $model->save();
+
+            return response()->json([
+                'status' => true,
+                'city_id' => $request->city,
+                'city_to_go' => $request->cityToAdd,
+            ]);
+        }
     }
 }
