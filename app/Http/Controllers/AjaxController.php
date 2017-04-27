@@ -49,4 +49,19 @@ class AjaxController extends Controller
             ]);
         }
     }
+
+    /**
+     * Add city to relation
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addCityToGo(Request $request)
+    {
+        return response()->json([
+            'status' => true,
+            'city_id' => $request->city,
+            'city_to_go' => $request->cityToAdd,
+        ]);
+    }
 }

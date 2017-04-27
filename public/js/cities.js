@@ -1,6 +1,7 @@
 function initMap()
 {
     var cities = [];
+    var combineCities = [];
 
     $.ajax({
         url: '/api/v1/map/cities',
@@ -109,6 +110,45 @@ function initMap()
                         infowindow.open(map, marker);
                     }
                 })(marker, i));
+
+                google.maps.event.addListener(marker, 'rightclick', (function(marker, i) {
+                    return function() {
+                        combineCities.push(cities[i].id);
+                        if (combineCities.length > 1) {
+                            infowindow.setContent(
+                                '<div>' +
+                                '<h2>' +
+                                'Add ' + cities[i].name +
+                                '</h2>' +
+                                '<div id="addCityContent">' +
+                                '<form method="post" name="addCityForm">' +
+                                '<p>' +
+                                '<input type="checkbox" name="car" value="1">' +
+                                 'By car' +
+                                '</p>' +
+                                '<p>' +
+                                '<input type="checkbox" name="train" value="2">' +
+                                'By train' +
+                                '</p>' +
+                                '<p>' +
+                                '<input type="checkbox" name="plain" value="3">' +
+                                'By plain' +
+                                '</p>' +
+                                '<input type="hidden" name="city" value="' + combineCities[0] +'">' +
+                                '<input type="hidden" name="cityToAdd" value="' + combineCities[1] +'">' +
+                                '<input type="submit" class="btn btn default add-city" value="Add">' +
+                                '</form>' +
+                                '</div>' +
+                                '</div>'
+                            );
+                            infowindow.open(map, marker);
+                        }
+                    }
+                })(marker, i));
+
+                google.maps.event.addListener(infowindow,'closeclick',function(){
+                    combineCities = [];
+                });
             }
         }
     });
@@ -139,6 +179,37 @@ $(document)
                         $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
                             .removeClass('city-to-go').addClass('city-to-go-not-active');
                     }
+                }
+            }
+        });
+    })
+    .on('submit', 'form[name=addCityForm]', function (e){
+        e.preventDefault();
+        var data = {
+            city: $("form[name=addCityForm] input[name=city]").val(),
+            cityToAdd: $("form[name=addCityForm] input[name=cityToAdd]").val(),
+        };
+
+        if ($('input[name=car]').prop('checked')) {
+            data.car = true;
+        }
+        if ($('input[name=train]').prop('checked')) {
+            data.train = true;
+        }
+        if ($('input[name=plain]').prop('checked')) {
+            data.plain = true;
+        }
+
+        $.ajax({
+            url: '/ajax/add-city-to-go',
+            method: "POST",
+            data: data,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            success: function (data) {
+                if (data.status) {
+                    
                 }
             }
         });
