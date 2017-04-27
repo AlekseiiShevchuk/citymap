@@ -25,12 +25,18 @@ function initMap()
                     if (!dataCitiesToGo[j].is_possible_to_get) {
                         city.citiesToAdd.push({
                             id: dataCitiesToGo[j].id,
-                            name: dataCitiesToGo[j].name_en
+                            name: dataCitiesToGo[j].name_en,
+                            getByCar: false,
+                            getByTrain: false,
+                            getByPlain: false
                         });
                     } else {
                         city.citiesToGo.push({
                             id: dataCitiesToGo[j].id,
-                            name: dataCitiesToGo[j].name_en
+                            name: dataCitiesToGo[j].name_en,
+                            getByCar: dataCitiesToGo[j].is_possible_to_get_by_car,
+                            getByTrain: dataCitiesToGo[j].is_possible_to_get_by_train,
+                            getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane
                         });
                     }
                 }
