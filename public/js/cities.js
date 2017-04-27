@@ -1,9 +1,9 @@
+var cities = [];
+var combineCities = [];
+var markers = [];
+
 function initMap()
 {
-    var cities = [];
-    combineCities = [];
-    markers = [];
-
     $.ajax({
         url: '/api/v1/map/cities',
         headers: {
@@ -46,11 +46,11 @@ function initMap()
                 cities.push(city);
             }
 
-            infowindow = new google.maps.InfoWindow();
+            var infowindow = new google.maps.InfoWindow();
 
             var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 2,
-                center: {lat: 75.363, lng: 185.044}
+                zoom: 4,
+                center: {lat: 63.363, lng: 27.044}
             });
 
             var badges = [];
