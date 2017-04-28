@@ -80,6 +80,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('/ajax/delete-city-to-go', 'AjaxController@deleteCityToGo');
 
+    Route::post('/ajax/add-city-to-go', 'AjaxController@addCityToGo');
+
     Route::resource('roles', 'RolesController');
     Route::post('roles_mass_destroy', ['uses' => 'RolesController@massDestroy', 'as' => 'roles.mass_destroy']);
 

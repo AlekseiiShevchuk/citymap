@@ -2,6 +2,10 @@
     height: 600px;
     width: 850px;
 }
-.delete-city-to-go {
+.city-to-go {
     cursor: pointer;
+}
+.city-to-go-not-active {
+    pointer-events: none;
+    cursor: default;
 }
