@@ -120,6 +120,11 @@ function initMap()
                         combineCities.push(cities[i].id);
                         markers.push(marker);
                         marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+
+                        if (combineCities.length > 2) {
+                            markers[markers.length - 2].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+                        }
+
                         if (combineCities.length > 1 && combineCities[0] != combineCities[1]) {
                             var relatedCity = combineCitiesObjects[0].citiesToGo.find(item => item.id === combineCitiesObjects[combineCitiesObjects.length - 1].id);
                             var getByCar = '';
@@ -155,7 +160,9 @@ function initMap()
                                 '</div>'
                             );
                             infowindow.open(map, marker);
-                        } else if (combineCities.length > 1 && combineCities[0] == combineCities[1]) {
+                        }
+                        
+                        if (combineCities.length > 1 && combineCities[0] == combineCities[1]) {
                             combineCities = [];
                             marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
                             markers = [];
