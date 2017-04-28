@@ -80,12 +80,19 @@ class AjaxController extends Controller
         ])->first();
 
         if ($city instanceof CityTransfer && $cityToAdd instanceof CityTransfer) {
-            $city->is_possible_to_get_by_car = isset($request->car) ? $request->car : 0;
-            $city->is_possible_to_get_by_train = isset($request->train) ? $request->train : 0;
-            $city->is_possible_to_get_by_plane = isset($request->plain) ? $request->plain : 0;
-            $cityToAdd->is_possible_to_get_by_car = isset($request->car) ? $request->car : 0;
-            $cityToAdd->is_possible_to_get_by_train = isset($request->train) ? $request->train : 0;
-            $cityToAdd->is_possible_to_get_by_plane = isset($request->plain) ? $request->plain : 0;
+            if (isset($request->car)) {
+                $city->is_possible_to_get_by_car = $request->car;
+                $cityToAdd->is_possible_to_get_by_car = $request->car;
+            }
+            if (isset($request->train)) {
+                $city->is_possible_to_get_by_train = $request->train;
+                $cityToAdd->is_possible_to_get_by_train = $request->train;
+            }
+            if (isset($request->plain)) {
+                $city->is_possible_to_get_by_plane = $request->plain;
+                $cityToAdd->is_possible_to_get_by_plane = $request->plain;
+            }
+
             $city->save();
             $cityToAdd->save();
 
