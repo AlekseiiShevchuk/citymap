@@ -1,9 +1,10 @@
-var cities = [];
-combineCities = [];
-markers = [];
-
 function initMap()
 {
+    var cities = [];
+    var combineCities = [];
+    var markers = [];
+    var combineCitiesObjects = [];
+
     $.ajax({
         url: '/api/v1/map/cities',
         headers: {
@@ -116,9 +117,15 @@ function initMap()
                 google.maps.event.addListener(marker, 'rightclick', (function(marker, i) {
                     return function() {
                         combineCities.push(cities[i].id);
+                        combineCitiesObjects.push(cities[i]);
                         markers.push(marker);
                         marker.setIcon('http://maps.google.com/mapfiles/ms/icons/purple-dot.png');
                         if (combineCities.length > 1 && combineCities[0] != combineCities[1]) {
+                            var relatedCity = combineCitiesObjects[0].citiesToGo.find(item => item.id == combineCitiesObjects[combineCitiesObjects.length - 1].id);
+                            var getByCar = relatedCity.getByCar ? 'disabled' : '';
+                            var getByTrain = relatedCity.getByTrain ? 'disabled' : '';
+                            var getByPlain = relatedCity.getByPlain ? 'disabled' : '';
+
                             infowindow.setContent(
                                 '<div>' +
                                 '<h2>' +
@@ -126,15 +133,15 @@ function initMap()
                                 '</h2>' +
                                 '<div id="addCityContent">' +
                                 '<p>' +
-                                '<input type="checkbox" name="car" value="1">' +
+                                '<input type="checkbox" name="car" ' + getByCar +' value="1">' +
                                  'By car' +
                                 '</p>' +
                                 '<p>' +
-                                '<input type="checkbox" name="train" value="2">' +
+                                '<input type="checkbox" name="train" ' + getByTrain +' value="2">' +
                                 'By train' +
                                 '</p>' +
                                 '<p>' +
-                                '<input type="checkbox" name="plain" value="3">' +
+                                '<input type="checkbox" name="plain" ' + getByPlain +' value="3">' +
                                 'By plain' +
                                 '</p>' +
                                 '<input type="hidden" name="city" value="' + combineCities[0] +'">' +
@@ -143,7 +150,7 @@ function initMap()
                                 '</div>' +
                                 '</div>'
                             );
-                            infowindow.open(map, marker);
+                            infowindow.open(map, marker); console.log(relatedCity);
                         } else if (combineCities.length > 1 && combineCities[0] == combineCities[1]) {
                             combineCities = [];
                             marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
@@ -218,12 +225,12 @@ $(document)
             },
             success: function (data) {
                 if (data.status) {
-                    infowindow.close();
+                    /*infowindow.close();
                     combineCities = [];
                     for (i = 0; i < markers.length; i++) {
                         markers[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
                     }
-                    markers = [];
+                    markers = [];*/
                 }
             }
         });
