@@ -40,7 +40,10 @@ function initMap()
                             name: dataCitiesToGo[j].name_en,
                             getByCar: dataCitiesToGo[j].is_possible_to_get_by_car,
                             getByTrain: dataCitiesToGo[j].is_possible_to_get_by_train,
-                            getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane
+                            getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane,
+                            priceByCar: dataCitiesToGo[j].price_by_car,
+                            priceByTrain: dataCitiesToGo[j].price_by_train,
+                            priceByPlain: dataCitiesToGo[j].price_by_train
                         });
                     }
                     city.allCities.push({
@@ -62,7 +65,7 @@ function initMap()
                 center: {lat: 63.363, lng: 27.044}
             });
 
-            var badges = [];
+            var tBody = [];
             for (i = 0; i < cities.length; i++) {
                 var marker = new google.maps.Marker({
                     position: {lat: cities[i].latitude, lng: cities[i].longitude},
@@ -72,32 +75,55 @@ function initMap()
 
                 var citiesToGo = cities[i].citiesToGo;
 
-                badges[i] = '';
+                tBody[i] = '';
                 for (j = 0; j < citiesToGo.length; j++) {
                     var carDeleteClass = citiesToGo[j].getByCar ? 'city-to-go' : 'city-to-go-not-active';
                     var trainDeleteClass = citiesToGo[j].getByTrain ? 'city-to-go' : 'city-to-go-not-active';
                     var plainDeleteClass = citiesToGo[j].getByPlain ? 'city-to-go' : 'city-to-go-not-active';
 
-                    badges[i] +=
-                        '<span class="badge" data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">'
-                        + citiesToGo[j].name + ' ' +
+                    tBody[i] +=
+                        '<tr data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">' +
+                        '<td>' +
+                        citiesToGo[j].name +
+                        '</td>' +
+                        '<td>' +
+                        citiesToGo[j].priceByCar +
+                        '</td>' +
+                        '<td>' +
                         '<span ' +
-                        'class="glyphicon glyphicon-bed ' + carDeleteClass +'" ' +
+                        'class="badge ' + carDeleteClass +'" ' +
                         'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1">' +
-                        '</span>' + ' ' +
-                        '<span ' +
-                        'class="glyphicon glyphicon-road ' + trainDeleteClass +'" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
-                        '</span>' + ' ' +
-                        '<span ' +
-                        'class="glyphicon glyphicon-plane ' + plainDeleteClass +'" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
-                        '</span>' + ' ' +
-                        '<span ' +
-                        'class="glyphicon glyphicon-trash city-to-go" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="4">' +
+                        'X' +
                         '</span>' +
-                        '</span>'
+                        '</td>' +
+                        '<td>' +
+                        citiesToGo[j].priceByTrain +
+                        '</td>' +
+                        '<td>' +
+                        '<span ' +
+                        'class="badge ' + trainDeleteClass +'" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
+                         'X' +
+                        '</span>' +
+                        '</td>' +
+                        '<td>' +
+                        citiesToGo[j].priceByPlain +
+                        '</td>' +
+                        '<td>' +
+                        '<span ' +
+                        'class="badge ' + plainDeleteClass +'" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
+                        'X' +
+                        '</span>' +
+                        '</td>' +
+                        '<td>' +
+                        '<span ' +
+                        'class="badge city-to-go" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="4">' +
+                        'X' +
+                        '</span>' +
+                        '</td>' +
+                        '</tr>'
                     ;
                 }
 
@@ -105,15 +131,27 @@ function initMap()
                     return function() {
                         infowindow.setContent(
                             '<div id="content">'+
-                            '<div id="bodyContent">'+
+                            '<div id="bodyContent" class="table-scroll">'+
                             '<h2>' +
                             cities[i].name +
                             '</h2>' +
                             '<div id="citiesToGo">' +
                             '<h3>Cities to go: </h3>'+
-                            '<div class="citiesToGoBadges" data-cityid="'+ cities[i].id +'">'+
-                            badges[i]+
-                            '</div>'+
+                            '<table class="table" data-cityid="'+ cities[i].id +'">'+
+                            '<thead>' +
+                            '<th>Name</th>' +
+                            '<th>Price by car</th>' +
+                            '<th>Remove by car</th>' +
+                            '<th>Price by train</th>' +
+                            '<th>Remove by train</th>' +
+                            '<th>Price by plain</th>' +
+                            '<th>Remove by plain</th>' +
+                            '<th>Remove all</th>' +
+                            '</thead>' +
+                            '<tbody>' +
+                            tBody[i]+
+                            '</tbody>' +
+                            '</table>'+
                             '</div>'+
                             '</div>'+
                             '</div>'
@@ -214,7 +252,7 @@ $(document)
             success: function (data) {
                 if (data.status) {
                     if (data.typeId == 4 || !data.isPossibleToGet) {
-                        $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
+                        $(document).find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
                             .remove();
                     } else {
                         $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')

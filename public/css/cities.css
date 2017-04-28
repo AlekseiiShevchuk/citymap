@@ -24,6 +24,10 @@
 .display-none {
     display: none;
 }
+.table-scroll {
+    height: 300px;
+    overflow-y: scroll;
+}
 
 @-webkit-keyframes spin {
     from {transform: rotate(0deg)}
