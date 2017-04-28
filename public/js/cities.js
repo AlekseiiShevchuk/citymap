@@ -146,7 +146,7 @@ function initMap()
                             }
 
                             var cityPrices = combineCitiesObjects[0].allCities.find(item => item.id === combineCitiesObjects[combineCitiesObjects.length - 1].id);
-                            
+
                             infowindow.setContent(
                                 '<div>' +
                                 '<h2>' +
@@ -251,9 +251,16 @@ $(document)
                 if (data.status) {
                     infowindow.close();
                     combineCities = [];
+
                     for (i = 0; i < markers.length; i++) {
                         markers[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
                     }
+
+                    $('#loader').toggleClass('display-none');
+                    setTimeout(function () {
+                        $('#loader').toggleClass('display-none');
+                    }, 3000);
+                    initMap(true);
                 }
             }
         });
