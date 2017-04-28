@@ -1,10 +1,10 @@
+var cities = [];
+var combineCities = [];
+var markers = [];
+var combineCitiesObjects = [];
+
 function initMap()
 {
-    var cities = [];
-    var combineCities = [];
-    var markers = [];
-    var combineCitiesObjects = [];
-
     $.ajax({
         url: '/api/v1/map/cities',
         headers: {
@@ -161,7 +161,7 @@ function initMap()
                             );
                             infowindow.open(map, marker);
                         }
-                        
+
                         if (combineCities.length > 1 && combineCities[0] == combineCities[1]) {
                             combineCities = [];
                             marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
@@ -237,12 +237,11 @@ $(document)
             },
             success: function (data) {
                 if (data.status) {
-                    /*infowindow.close();
+                    infowindow.close();
                     combineCities = [];
                     for (i = 0; i < markers.length; i++) {
                         markers[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
                     }
-                    markers = [];*/
                 }
             }
         });
