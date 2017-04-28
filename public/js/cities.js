@@ -1,6 +1,7 @@
 var cities = [];
-combineCities = [];
-markers = [];
+var combineCities = [];
+var markers = [];
+var combineCitiesObjects = [];
 
 function initMap()
 {
@@ -18,7 +19,8 @@ function initMap()
                     latitude: data[i].latitude,
                     longitude: data[i].longitude,
                     citiesToGo: [],
-                    citiesToAdd: []
+                    citiesToAdd: [],
+                    allCities: []
                 };
 
                 var dataCitiesToGo = data[i].cities_to_go;
@@ -38,9 +40,19 @@ function initMap()
                             name: dataCitiesToGo[j].name_en,
                             getByCar: dataCitiesToGo[j].is_possible_to_get_by_car,
                             getByTrain: dataCitiesToGo[j].is_possible_to_get_by_train,
-                            getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane
+                            getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane,
+                            priceByCar: dataCitiesToGo[j].price_by_car,
+                            priceByTrain: dataCitiesToGo[j].price_by_train,
+                            priceByPlain: dataCitiesToGo[j].price_by_train
                         });
                     }
+                    city.allCities.push({
+                        id: dataCitiesToGo[j].id,
+                        name: dataCitiesToGo[j].name_en,
+                        priceByCar: dataCitiesToGo[j].price_by_car,
+                        priceByTrain: dataCitiesToGo[j].price_by_train,
+                        priceByPlain: dataCitiesToGo[j].price_by_train
+                    });
                 }
 
                 cities.push(city);
@@ -53,7 +65,7 @@ function initMap()
                 center: {lat: 63.363, lng: 27.044}
             });
 
-            var badges = [];
+            var tBody = [];
             for (i = 0; i < cities.length; i++) {
                 var marker = new google.maps.Marker({
                     position: {lat: cities[i].latitude, lng: cities[i].longitude},
@@ -63,32 +75,55 @@ function initMap()
 
                 var citiesToGo = cities[i].citiesToGo;
 
-                badges[i] = '';
+                tBody[i] = '';
                 for (j = 0; j < citiesToGo.length; j++) {
                     var carDeleteClass = citiesToGo[j].getByCar ? 'city-to-go' : 'city-to-go-not-active';
                     var trainDeleteClass = citiesToGo[j].getByTrain ? 'city-to-go' : 'city-to-go-not-active';
                     var plainDeleteClass = citiesToGo[j].getByPlain ? 'city-to-go' : 'city-to-go-not-active';
 
-                    badges[i] +=
-                        '<span class="badge" data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">'
-                        + citiesToGo[j].name + ' ' +
+                    tBody[i] +=
+                        '<tr data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">' +
+                        '<td>' +
+                        citiesToGo[j].name +
+                        '</td>' +
+                        '<td>' +
+                        citiesToGo[j].priceByCar +
+                        '</td>' +
+                        '<td>' +
                         '<span ' +
-                        'class="glyphicon glyphicon-bed ' + carDeleteClass +'" ' +
+                        'class="badge ' + carDeleteClass +'" ' +
                         'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1">' +
-                        '</span>' + ' ' +
-                        '<span ' +
-                        'class="glyphicon glyphicon-road ' + trainDeleteClass +'" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
-                        '</span>' + ' ' +
-                        '<span ' +
-                        'class="glyphicon glyphicon-plane ' + plainDeleteClass +'" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
-                        '</span>' + ' ' +
-                        '<span ' +
-                        'class="glyphicon glyphicon-trash city-to-go" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="4">' +
+                        'X' +
                         '</span>' +
-                        '</span>'
+                        '</td>' +
+                        '<td>' +
+                        citiesToGo[j].priceByTrain +
+                        '</td>' +
+                        '<td>' +
+                        '<span ' +
+                        'class="badge ' + trainDeleteClass +'" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
+                         'X' +
+                        '</span>' +
+                        '</td>' +
+                        '<td>' +
+                        citiesToGo[j].priceByPlain +
+                        '</td>' +
+                        '<td>' +
+                        '<span ' +
+                        'class="badge ' + plainDeleteClass +'" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
+                        'X' +
+                        '</span>' +
+                        '</td>' +
+                        '<td>' +
+                        '<span ' +
+                        'class="badge city-to-go" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="4">' +
+                        'X' +
+                        '</span>' +
+                        '</td>' +
+                        '</tr>'
                     ;
                 }
 
@@ -96,15 +131,27 @@ function initMap()
                     return function() {
                         infowindow.setContent(
                             '<div id="content">'+
-                            '<div id="bodyContent">'+
+                            '<div id="bodyContent" class="table-scroll">'+
                             '<h2>' +
                             cities[i].name +
                             '</h2>' +
                             '<div id="citiesToGo">' +
                             '<h3>Cities to go: </h3>'+
-                            '<div class="citiesToGoBadges" data-cityid="'+ cities[i].id +'">'+
-                            badges[i]+
-                            '</div>'+
+                            '<table class="table" data-cityid="'+ cities[i].id +'">'+
+                            '<thead>' +
+                            '<th>Name</th>' +
+                            '<th>Price by car</th>' +
+                            '<th>Remove by car</th>' +
+                            '<th>Price by train</th>' +
+                            '<th>Remove by train</th>' +
+                            '<th>Price by plain</th>' +
+                            '<th>Remove by plain</th>' +
+                            '<th>Remove all</th>' +
+                            '</thead>' +
+                            '<tbody>' +
+                            tBody[i]+
+                            '</tbody>' +
+                            '</table>'+
                             '</div>'+
                             '</div>'+
                             '</div>'
@@ -115,10 +162,29 @@ function initMap()
 
                 google.maps.event.addListener(marker, 'rightclick', (function(marker, i) {
                     return function() {
+                        combineCitiesObjects.push(cities[i]);
                         combineCities.push(cities[i].id);
                         markers.push(marker);
-                        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/purple-dot.png');
+                        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+
+                        if (combineCities.length > 2) {
+                            markers[markers.length - 2].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+                        }
+
                         if (combineCities.length > 1 && combineCities[0] != combineCities[1]) {
+                            var relatedCity = combineCitiesObjects[0].citiesToGo.find(item => item.id === combineCitiesObjects[combineCitiesObjects.length - 1].id);
+                            var getByCar = '';
+                            var getByTrain = '';
+                            var getByPlain = '';
+
+                            if (relatedCity != undefined) {
+                                getByCar = relatedCity.getByCar ? 'disabled' : '';
+                                getByTrain = relatedCity.getByTrain ? 'disabled' : '';
+                                getByPlain = relatedCity.getByPlain ? 'disabled' : '';
+                            }
+
+                            var cityPrices = combineCitiesObjects[0].allCities.find(item => item.id === combineCitiesObjects[combineCitiesObjects.length - 1].id);
+
                             infowindow.setContent(
                                 '<div>' +
                                 '<h2>' +
@@ -126,16 +192,16 @@ function initMap()
                                 '</h2>' +
                                 '<div id="addCityContent">' +
                                 '<p>' +
-                                '<input type="checkbox" name="car" value="1">' +
-                                 'By car' +
+                                '<input type="checkbox" name="car" ' + getByCar +' value="1">' +
+                                'By car' + '(Price: ' + cityPrices.priceByCar + ')' +
                                 '</p>' +
                                 '<p>' +
-                                '<input type="checkbox" name="train" value="2">' +
-                                'By train' +
+                                '<input type="checkbox" name="train" ' + getByTrain +' value="2">' +
+                                'By train' + '(Price: ' + cityPrices.priceByTrain + ')' +
                                 '</p>' +
                                 '<p>' +
-                                '<input type="checkbox" name="plain" value="3">' +
-                                'By plain' +
+                                '<input type="checkbox" name="plain" ' + getByPlain +' value="3">' +
+                                'By plain' + '(Price: ' + cityPrices.priceByPlain + ')' +
                                 '</p>' +
                                 '<input type="hidden" name="city" value="' + combineCities[0] +'">' +
                                 '<input type="hidden" name="cityToAdd" value="' + combineCities[1] +'">' +
@@ -144,7 +210,9 @@ function initMap()
                                 '</div>'
                             );
                             infowindow.open(map, marker);
-                        } else if (combineCities.length > 1 && combineCities[0] == combineCities[1]) {
+                        }
+
+                        if (combineCities.length > 1 && combineCities[0] == combineCities[1]) {
                             combineCities = [];
                             marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
                             markers = [];
@@ -154,6 +222,7 @@ function initMap()
 
                 google.maps.event.addListener(infowindow,'closeclick',function(){
                     combineCities = [];
+                    combineCitiesObjects = [];
                     for (i = 0; i < markers.length; i++) {
                         markers[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
                     }
@@ -183,7 +252,7 @@ $(document)
             success: function (data) {
                 if (data.status) {
                     if (data.typeId == 4 || !data.isPossibleToGet) {
-                        $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
+                        $(document).find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
                             .remove();
                     } else {
                         $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
@@ -220,10 +289,16 @@ $(document)
                 if (data.status) {
                     infowindow.close();
                     combineCities = [];
+
                     for (i = 0; i < markers.length; i++) {
                         markers[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
                     }
-                    markers = [];
+
+                    $('#loader').toggleClass('display-none');
+                    setTimeout(function () {
+                        $('#loader').toggleClass('display-none');
+                    }, 2500);
+                    initMap(true);
                 }
             }
         });

@@ -15,36 +15,48 @@ class AjaxController extends Controller
      */
     public function deleteCityToGo(Request $request)
     {
-        $model = CityTransfer::where([
+        $city = CityTransfer::where([
             'city_id' => $request->cityId,
             'city_to_go_id' => $request->cityToGo
         ])->first();
 
-        if ($model instanceof CityTransfer) {
+        $cityToGo = CityTransfer::where([
+            'city_id' => $request->cityToGo,
+            'city_to_go_id' => $request->cityId
+        ])->first();
+
+        if ($city instanceof CityTransfer && $cityToGo instanceof CityTransfer) {
             switch ($request->type) {
                 case CityTransfer::GET_BY_CAR:
-                    $model->is_possible_to_get_by_car = false;
+                    $city->is_possible_to_get_by_car = false;
+                    $cityToGo->is_possible_to_get_by_car = false;
                     break;
                 case CityTransfer::GET_BY_TRAIN:
-                    $model->is_possible_to_get_by_train = false;
+                    $city->is_possible_to_get_by_train = false;
+                    $cityToGo->is_possible_to_get_by_train = false;
                     break;
                 case CityTransfer::GET_BY_PLAIN:
-                    $model->is_possible_to_get_by_plane = false;
+                    $city->is_possible_to_get_by_plane = false;
+                    $cityToGo->is_possible_to_get_by_plane = false;
                     break;
                 default:
-                    $model->is_possible_to_get_by_car = false;
-                    $model->is_possible_to_get_by_train = false;
-                    $model->is_possible_to_get_by_plane = false;
+                    $city->is_possible_to_get_by_car = false;
+                    $city->is_possible_to_get_by_train = false;
+                    $city->is_possible_to_get_by_plane = false;
+                    $cityToGo->is_possible_to_get_by_car = false;
+                    $cityToGo->is_possible_to_get_by_train = false;
+                    $cityToGo->is_possible_to_get_by_plane = false;
             }
-            
-            $model->save();
+
+            $city->save();
+            $cityToGo->save();
 
             return response()->json([
                 'status' => true,
                 'city_id' => $request->cityId,
                 'city_to_go' => $request->cityToGo,
                 'typeId' => $request->type,
-                'isPossibleToGet' => $model->is_possible_to_get
+                'isPossibleToGet' => $city->is_possible_to_get
             ]);
         }
     }
@@ -57,16 +69,32 @@ class AjaxController extends Controller
      */
     public function addCityToGo(Request $request)
     {
-        $model = CityTransfer::where([
+        $city = CityTransfer::where([
             'city_id' => $request->city,
             'city_to_go_id' => $request->cityToAdd
         ])->first();
 
-        if ($model instanceof CityTransfer) {
-            $model->is_possible_to_get_by_car = isset($request->car) ? $request->car : 0;
-            $model->is_possible_to_get_by_train = isset($request->train) ? $request->train : 0;
-            $model->is_possible_to_get_by_plane = isset($request->plain) ? $request->plain : 0;
-            $model->save();
+        $cityToAdd = CityTransfer::where([
+            'city_id' => $request->cityToAdd,
+            'city_to_go_id' => $request->city
+        ])->first();
+
+        if ($city instanceof CityTransfer && $cityToAdd instanceof CityTransfer) {
+            if (isset($request->car)) {
+                $city->is_possible_to_get_by_car = $request->car;
+                $cityToAdd->is_possible_to_get_by_car = $request->car;
+            }
+            if (isset($request->train)) {
+                $city->is_possible_to_get_by_train = $request->train;
+                $cityToAdd->is_possible_to_get_by_train = $request->train;
+            }
+            if (isset($request->plain)) {
+                $city->is_possible_to_get_by_plane = $request->plain;
+                $cityToAdd->is_possible_to_get_by_plane = $request->plain;
+            }
+
+            $city->save();
+            $cityToAdd->save();
 
             return response()->json([
                 'status' => true,
