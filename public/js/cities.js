@@ -31,7 +31,10 @@ function initMap()
                             name: dataCitiesToGo[j].name_en,
                             getByCar: false,
                             getByTrain: false,
-                            getByPlain: false
+                            getByPlain: false,
+                            priceByCar: dataCitiesToGo[j].price_by_car,
+                            priceByTrain: dataCitiesToGo[j].price_by_train,
+                            priceByPlain: dataCitiesToGo[j].price_by_train
                         });
                     } else {
                         city.citiesToGo.push({
@@ -39,7 +42,10 @@ function initMap()
                             name: dataCitiesToGo[j].name_en,
                             getByCar: dataCitiesToGo[j].is_possible_to_get_by_car,
                             getByTrain: dataCitiesToGo[j].is_possible_to_get_by_train,
-                            getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane
+                            getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane,
+                            priceByCar: dataCitiesToGo[j].price_by_car,
+                            priceByTrain: dataCitiesToGo[j].price_by_train,
+                            priceByPlain: dataCitiesToGo[j].price_by_train
                         });
                     }
                 }
