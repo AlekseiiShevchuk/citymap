@@ -19,7 +19,8 @@ function initMap()
                     latitude: data[i].latitude,
                     longitude: data[i].longitude,
                     citiesToGo: [],
-                    citiesToAdd: []
+                    citiesToAdd: [],
+                    allCities: []
                 };
 
                 var dataCitiesToGo = data[i].cities_to_go;
@@ -31,10 +32,7 @@ function initMap()
                             name: dataCitiesToGo[j].name_en,
                             getByCar: false,
                             getByTrain: false,
-                            getByPlain: false,
-                            priceByCar: dataCitiesToGo[j].price_by_car,
-                            priceByTrain: dataCitiesToGo[j].price_by_train,
-                            priceByPlain: dataCitiesToGo[j].price_by_train
+                            getByPlain: false
                         });
                     } else {
                         city.citiesToGo.push({
@@ -42,12 +40,16 @@ function initMap()
                             name: dataCitiesToGo[j].name_en,
                             getByCar: dataCitiesToGo[j].is_possible_to_get_by_car,
                             getByTrain: dataCitiesToGo[j].is_possible_to_get_by_train,
-                            getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane,
-                            priceByCar: dataCitiesToGo[j].price_by_car,
-                            priceByTrain: dataCitiesToGo[j].price_by_train,
-                            priceByPlain: dataCitiesToGo[j].price_by_train
+                            getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane
                         });
                     }
+                    city.allCities.push({
+                        id: dataCitiesToGo[j].id,
+                        name: dataCitiesToGo[j].name_en,
+                        priceByCar: dataCitiesToGo[j].price_by_car,
+                        priceByTrain: dataCitiesToGo[j].price_by_train,
+                        priceByPlain: dataCitiesToGo[j].price_by_train
+                    });
                 }
 
                 cities.push(city);
@@ -136,11 +138,15 @@ function initMap()
                             var getByCar = '';
                             var getByTrain = '';
                             var getByPlain = '';
+
                             if (relatedCity != undefined) {
                                 getByCar = relatedCity.getByCar ? 'disabled' : '';
                                 getByTrain = relatedCity.getByTrain ? 'disabled' : '';
                                 getByPlain = relatedCity.getByPlain ? 'disabled' : '';
                             }
+
+                            var cityPrices = combineCitiesObjects[0].allCities.find(item => item.id === combineCitiesObjects[combineCitiesObjects.length - 1].id);
+                            
                             infowindow.setContent(
                                 '<div>' +
                                 '<h2>' +
@@ -149,15 +155,15 @@ function initMap()
                                 '<div id="addCityContent">' +
                                 '<p>' +
                                 '<input type="checkbox" name="car" ' + getByCar +' value="1">' +
-                                'By car' +
+                                'By car' + '(Price: ' + cityPrices.priceByCar + ')' +
                                 '</p>' +
                                 '<p>' +
                                 '<input type="checkbox" name="train" ' + getByTrain +' value="2">' +
-                                'By train' +
+                                'By train' + '(Price: ' + cityPrices.priceByTrain + ')' +
                                 '</p>' +
                                 '<p>' +
                                 '<input type="checkbox" name="plain" ' + getByPlain +' value="3">' +
-                                'By plain' +
+                                'By plain' + '(Price: ' + cityPrices.priceByPlain + ')' +
                                 '</p>' +
                                 '<input type="hidden" name="city" value="' + combineCities[0] +'">' +
                                 '<input type="hidden" name="cityToAdd" value="' + combineCities[1] +'">' +
