@@ -125,7 +125,7 @@ function initMap()
                             var getByCar = '';
                             var getByTrain = '';
                             var getByPlain = '';
-                            if (relatedCity) {
+                            if (relatedCity != undefined) {
                                 getByCar = relatedCity.getByCar ? 'disabled' : '';
                                 getByTrain = relatedCity.getByTrain ? 'disabled' : '';
                                 getByPlain = relatedCity.getByPlain ? 'disabled' : '';
