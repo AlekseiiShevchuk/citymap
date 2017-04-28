@@ -119,13 +119,16 @@ function initMap()
                         combineCitiesObjects.push(cities[i]);
                         combineCities.push(cities[i].id);
                         markers.push(marker);
-                        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/purple-dot.png');
+                        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
                         if (combineCities.length > 1 && combineCities[0] != combineCities[1]) {
                             var relatedCity = combineCitiesObjects[0].citiesToGo.find(item => item.id === combineCitiesObjects[combineCitiesObjects.length - 1].id);
+                            var getByCar = '';
+                            var getByTrain = '';
+                            var getByPlain = '';
                             if (relatedCity) {
-                                var getByCar = relatedCity.getByCar ? 'disabled' : '';
-                                var getByTrain = relatedCity.getByTrain ? 'disabled' : '';
-                                var getByPlain = relatedCity.getByPlain ? 'disabled' : '';
+                                getByCar = relatedCity.getByCar ? 'disabled' : '';
+                                getByTrain = relatedCity.getByTrain ? 'disabled' : '';
+                                getByPlain = relatedCity.getByPlain ? 'disabled' : '';
                             }
                             infowindow.setContent(
                                 '<div>' +
