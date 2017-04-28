@@ -259,7 +259,7 @@ $(document)
                     $('#loader').toggleClass('display-none');
                     setTimeout(function () {
                         $('#loader').toggleClass('display-none');
-                    }, 3000);
+                    }, 2500);
                     initMap(true);
                 }
             }
