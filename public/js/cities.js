@@ -80,17 +80,22 @@ function initMap()
                     var carIsChecked = citiesToGo[j].getByCar ? 'checked' : '';
                     var trainIsChecked = citiesToGo[j].getByTrain ? 'checked' : '';
                     var plainIsChecked = citiesToGo[j].getByPlain ? 'checked' : '';
+
                     var carCheckboxValue = citiesToGo[j].getByCar ? 0 : 1;
                     var trainCheckboxValue = citiesToGo[j].getByTrain ? 0 : 1;
                     var plainCheckboxValue = citiesToGo[j].getByPlain ? 0 : 1;
+
+                    var carPriceValue = citiesToGo[j].getByCar ? citiesToGo[j].priceByCar : '-';
+                    var trainPriceValue = citiesToGo[j].getByTrain ? citiesToGo[j].priceByTrain : '-';
+                    var plainPriceValue = citiesToGo[j].getByPlain ? citiesToGo[j].priceByPlain : '-';
 
                     tBody[i] +=
                         '<tr data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">' +
                         '<td>' +
                         citiesToGo[j].name +
                         '</td>' +
-                        '<td>' +
-                        citiesToGo[j].priceByCar +
+                        '<td data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1">' +
+                        carPriceValue +
                         '</td>' +
                         '<td>' +
                         '<input ' +
@@ -98,8 +103,8 @@ function initMap()
                         'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1" ' +
                         'value="' + carCheckboxValue +'" ' + carIsChecked +' type="checkbox">' +
                         '</td>' +
-                        '<td>' +
-                        citiesToGo[j].priceByTrain +
+                        '<td data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
+                        trainPriceValue +
                         '</td>' +
                         '<td>' +
                         '<input ' +
@@ -107,8 +112,8 @@ function initMap()
                         'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2" ' +
                         'value="' + trainCheckboxValue +'" ' + trainIsChecked +' type="checkbox">' +
                         '</td>' +
-                        '<td>' +
-                        citiesToGo[j].priceByPlain +
+                        '<td data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
+                        plainPriceValue +
                         '</td>' +
                         '<td>' +
                         '<input ' +
@@ -260,6 +265,9 @@ $(document)
                         $(document)
                             .find('input[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
                             .val(data.response_value);
+                        $(document)
+                            .find('td[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
+                            .html(data.price);
                     }
                 }
             }

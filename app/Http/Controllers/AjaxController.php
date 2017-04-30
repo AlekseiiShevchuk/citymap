@@ -62,32 +62,38 @@ class AjaxController extends Controller
         ])->first();
 
         if ($city instanceof CityTransfer && $cityToGo instanceof CityTransfer) {
+            $data = [
+                'status' => true,
+                'city_id' => $request->cityId,
+                'city_to_go' => $request->cityToGo,
+                'response_value' => $request->value ? 0 : 1,
+                'typeId' => $request->type
+            ];
+
             switch ($request->type) {
                 case CityTransfer::GET_BY_CAR:
                     $city->is_possible_to_get_by_car = $request->value;
                     $cityToGo->is_possible_to_get_by_car = $request->value;
+                    $data['price'] = $request->value ? $city->price_by_car : '-';
                     break;
                 case CityTransfer::GET_BY_TRAIN:
                     $city->is_possible_to_get_by_train = $request->value;
                     $cityToGo->is_possible_to_get_by_train = $request->value;
+                    $data['price'] = $request->value ? $city->price_by_train : '-';
                     break;
                 case CityTransfer::GET_BY_PLAIN:
                     $city->is_possible_to_get_by_plane = $request->value;
                     $cityToGo->is_possible_to_get_by_plane = $request->value;
+                    $data['price'] = $request->value ? $city->price_by_plane : '-';
                     break;
             }
 
             $city->save();
             $cityToGo->save();
             
-            return response()->json([
-                'status' => true,
-                'city_id' => $request->cityId,
-                'city_to_go' => $request->cityToGo,
-                'response_value' => $request->value ? 0 : 1,
-                'typeId' => $request->type,
-                'isPossibleToGet' => $city->is_possible_to_get
-            ]);
+            $data['isPossibleToGet'] = $city->is_possible_to_get;
+            
+            return response()->json($data);
         }
     }
 
