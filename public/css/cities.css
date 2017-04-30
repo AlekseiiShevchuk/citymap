@@ -5,6 +5,16 @@
 .city-to-go-remove-all {
     cursor: pointer;
 }
+.city-to-go-fix-price {
+    cursor: pointer;
+}
+.city-to-go-fix-price-not-active {
+    pointer-events: none;
+    cursor: default;
+}
+.hidden-price {
+
+}
 #loader {
     width: 45px;
     height: 45px;

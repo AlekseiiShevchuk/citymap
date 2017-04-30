@@ -89,12 +89,16 @@ function initMap()
                     var trainPriceValue = citiesToGo[j].getByTrain ? citiesToGo[j].priceByTrain : '-';
                     var plainPriceValue = citiesToGo[j].getByPlain ? citiesToGo[j].priceByPlain : '-';
 
+                    var carFixPriceClass = citiesToGo[j].getByCar ? 'city-to-go-fix-price' : 'city-to-go-fix-price-not-active';
+                    var trainFixPriceClass  = citiesToGo[j].getByTrain ? 'city-to-go-fix-price' : 'city-to-go-fix-price-not-active';
+                    var plainFixPriceClass  = citiesToGo[j].getByPlain ? 'city-to-go-fix-price' : 'city-to-go-fix-price-not-active';
+
                     tBody[i] +=
                         '<tr data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">' +
                         '<td>' +
                         citiesToGo[j].name +
                         '</td>' +
-                        '<td data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1">' +
+                        '<td class="' + carFixPriceClass +'" data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1">' +
                         carPriceValue +
                         '</td>' +
                         '<td>' +
@@ -103,7 +107,7 @@ function initMap()
                         'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1" ' +
                         'value="' + carCheckboxValue +'" ' + carIsChecked +' type="checkbox">' +
                         '</td>' +
-                        '<td data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
+                        '<td class="' + trainFixPriceClass +'" data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
                         trainPriceValue +
                         '</td>' +
                         '<td>' +
@@ -112,7 +116,7 @@ function initMap()
                         'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2" ' +
                         'value="' + trainCheckboxValue +'" ' + trainIsChecked +' type="checkbox">' +
                         '</td>' +
-                        '<td data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
+                        '<td class="' + plainFixPriceClass +'" data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
                         plainPriceValue +
                         '</td>' +
                         '<td>' +
@@ -295,6 +299,23 @@ $(document)
                 }
             }
         });
+    })
+    .on('dblclick', '.city-to-go-fix-price', function () {
+        $(document).find('.input-send-fixed-price').remove();
+        $(document).find('.hidden-price').show().removeClass('hidden-price');
+
+        var item = $(this);
+        item.addClass('hidden-price');
+        var dataCityId = item.attr('data-cityid');
+        var dataCityToGo = item.attr('data-citytogo');
+        var dataType = item.attr('data-type');
+        var inputValue = item.html();
+        var previousItem = item.prev();
+        item.hide();
+        previousItem.after(
+            '<input type="text" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToGo +'"' +
+            ' data-type="' + dataType +'" value="' + inputValue +'" class="input-send-fixed-price">'
+        );
     })
     .on('click', '.add-city', function () {
         var data = {
