@@ -98,6 +98,53 @@ class AjaxController extends Controller
     }
 
     /**
+     * Change price of traffic by type
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function changePrice(Request $request)
+    {
+        $city = CityTransfer::where([
+            'city_id' => $request->cityId,
+            'city_to_go_id' => $request->cityToGo
+        ])->first();
+
+        $cityToGo = CityTransfer::where([
+            'city_id' => $request->cityToGo,
+            'city_to_go_id' => $request->cityId
+        ])->first();
+
+        if ($city instanceof CityTransfer && $cityToGo instanceof CityTransfer) {
+            switch ($request->type) {
+                case CityTransfer::GET_BY_CAR:
+                    $city->price_by_car = $request->value;
+                    $cityToGo->price_by_car = $request->value;
+                    break;
+                case CityTransfer::GET_BY_TRAIN:
+                    $city->price_by_train = $request->value;
+                    $cityToGo->price_by_train = $request->value;
+                    break;
+                case CityTransfer::GET_BY_PLAIN:
+                    $city->price_by_plane = $request->value;
+                    $cityToGo->price_by_plane = $request->value;
+                    break;
+            }
+
+            $city->save();
+            $cityToGo->save();
+
+            return response()->json([
+                'status' => true,
+                'city_id' => $request->cityId,
+                'city_to_go' => $request->cityToGo,
+                'response_value' => $request->value,
+                'typeId' => $request->type
+            ]);
+        }
+    }
+
+    /**
      * Add city to relation
      *
      * @param Request $request

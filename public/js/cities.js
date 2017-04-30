@@ -2,6 +2,7 @@ var cities = [];
 var combineCities = [];
 var markers = [];
 var combineCitiesObjects = [];
+var isInputPriceReady = false;
 
 function initMap()
 {
@@ -43,7 +44,7 @@ function initMap()
                             getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane,
                             priceByCar: dataCitiesToGo[j].price_by_car,
                             priceByTrain: dataCitiesToGo[j].price_by_train,
-                            priceByPlain: dataCitiesToGo[j].price_by_train
+                            priceByPlain: dataCitiesToGo[j].price_by_plane
                         });
                     }
                     city.allCities.push({
@@ -271,6 +272,8 @@ $(document)
                             .val(data.response_value);
                         $(document)
                             .find('td[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
+                            .toggleClass('city-to-go-fix-price')
+                            .toggleClass('city-to-go-fix-price-not-active')
                             .html(data.price);
                     }
                 }
@@ -316,6 +319,40 @@ $(document)
             '<input type="text" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToGo +'"' +
             ' data-type="' + dataType +'" value="' + inputValue +'" class="input-send-fixed-price">'
         );
+        isInputPriceReady = true;
+    })
+    .keypress(function(e) {
+        if(e.which == 13 && isInputPriceReady) {
+            var item = $(document)
+                .find('input[class="input-send-fixed-price"][type=text]');
+            var data = {
+                cityId: item.attr('data-cityid'),
+                cityToGo: item.attr('data-citytogo'),
+                type: item.attr('data-type'),
+                value: item.val()
+            };
+
+            $.ajax({
+                url: '/ajax/change-price',
+                method: "POST",
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                },
+                success: function (data) {
+                    if (data.status) {
+                        $(document)
+                            .find('input[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"][type=text]')
+                            .remove();
+                        $(document)
+                            .find('td[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
+                            .html(data.response_value)
+                            .show();
+                        isInputPriceReady = false;
+                    }
+                }
+            });
+        }
     })
     .on('click', '.add-city', function () {
         var data = {
@@ -353,7 +390,7 @@ $(document)
                     setTimeout(function () {
                         $('#loader').toggleClass('display-none');
                     }, 2500);
-                    initMap(true);
+                    initMap();
                 }
             }
         });
