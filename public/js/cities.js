@@ -77,9 +77,12 @@ function initMap()
 
                 tBody[i] = '';
                 for (j = 0; j < citiesToGo.length; j++) {
-                    var carDeleteClass = citiesToGo[j].getByCar ? 'city-to-go' : 'city-to-go-not-active';
-                    var trainDeleteClass = citiesToGo[j].getByTrain ? 'city-to-go' : 'city-to-go-not-active';
-                    var plainDeleteClass = citiesToGo[j].getByPlain ? 'city-to-go' : 'city-to-go-not-active';
+                    var carIsChecked = citiesToGo[j].getByCar ? 'checked' : '';
+                    var trainIsChecked = citiesToGo[j].getByTrain ? 'checked' : '';
+                    var plainIsChecked = citiesToGo[j].getByPlain ? 'checked' : '';
+                    var carCheckboxValue = citiesToGo[j].getByCar ? 0 : 1;
+                    var trainCheckboxValue = citiesToGo[j].getByTrain ? 0 : 1;
+                    var plainCheckboxValue = citiesToGo[j].getByPlain ? 0 : 1;
 
                     tBody[i] +=
                         '<tr data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">' +
@@ -90,36 +93,33 @@ function initMap()
                         citiesToGo[j].priceByCar +
                         '</td>' +
                         '<td>' +
-                        '<span ' +
-                        'class="badge ' + carDeleteClass +'" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1">' +
-                        'X' +
-                        '</span>' +
+                        '<input ' +
+                        'class="city-to-go-checkbox" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1" ' +
+                        'value="' + carCheckboxValue +'" ' + carIsChecked +' type="checkbox">' +
                         '</td>' +
                         '<td>' +
                         citiesToGo[j].priceByTrain +
                         '</td>' +
                         '<td>' +
-                        '<span ' +
-                        'class="badge ' + trainDeleteClass +'" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
-                         'X' +
-                        '</span>' +
+                        '<input ' +
+                        'class="city-to-go-checkbox" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2" ' +
+                        'value="' + trainCheckboxValue +'" ' + trainIsChecked +' type="checkbox">' +
                         '</td>' +
                         '<td>' +
                         citiesToGo[j].priceByPlain +
                         '</td>' +
                         '<td>' +
-                        '<span ' +
-                        'class="badge ' + plainDeleteClass +'" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
-                        'X' +
-                        '</span>' +
+                        '<input ' +
+                        'class="city-to-go-checkbox" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3" ' +
+                        'value="' + plainCheckboxValue +'" ' + plainIsChecked +' type="checkbox">' +
                         '</td>' +
                         '<td>' +
                         '<span ' +
-                        'class="badge city-to-go" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="4">' +
+                        'class="badge city-to-go-remove-all" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">' +
                         'X' +
                         '</span>' +
                         '</td>' +
@@ -141,11 +141,11 @@ function initMap()
                             '<thead>' +
                             '<th>Name</th>' +
                             '<th>Price by car</th>' +
-                            '<th>Remove by car</th>' +
+                            '<th>Car</th>' +
                             '<th>Price by train</th>' +
-                            '<th>Remove by train</th>' +
+                            '<th>Train</th>' +
                             '<th>Price by plain</th>' +
-                            '<th>Remove by plain</th>' +
+                            '<th>Plain</th>' +
                             '<th>Remove all</th>' +
                             '</thead>' +
                             '<tbody>' +
@@ -234,12 +234,42 @@ function initMap()
 }
 
 $(document)
-    .on('dblclick', '.city-to-go', function () {
+    .on('change', '.city-to-go-checkbox', function () {
         var item = $(this);
         var data = {
             cityId: item.attr('data-cityid'),
             cityToGo: item.attr('data-citytogo'),
-            type: item.attr('data-type')
+            type: item.attr('data-type'),
+            value: item.val()
+        };
+
+        $.ajax({
+            url: '/ajax/add-or-remove-traffic-option',
+            method: "POST",
+            data: data,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            success: function (data) {
+                if (data.status) {
+                    if (!data.isPossibleToGet) {
+                        $(document)
+                            .find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
+                            .remove();
+                    } else {
+                        $(document)
+                            .find('input[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
+                            .val(data.response_value);
+                    }
+                }
+            }
+        });
+    })
+    .on('dblclick', '.city-to-go-remove-all', function () {
+        var item = $(this);
+        var data = {
+            cityId: item.attr('data-cityid'),
+            cityToGo: item.attr('data-citytogo')
         };
 
         $.ajax({
@@ -251,13 +281,9 @@ $(document)
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.typeId == 4 || !data.isPossibleToGet) {
-                        $(document).find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
-                            .remove();
-                    } else {
-                        $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
-                            .removeClass('city-to-go').addClass('city-to-go-not-active');
-                    }
+                    $(document)
+                        .find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
+                        .remove();
                 }
             }
         });

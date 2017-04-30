@@ -80,6 +80,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('/ajax/delete-city-to-go', 'AjaxController@deleteCityToGo');
 
+    Route::post('/ajax/add-or-remove-traffic-option', 'AjaxController@addOrRemoveCityTrafficOption');
+
     Route::post('/ajax/add-city-to-go', 'AjaxController@addCityToGo');
 
     Route::resource('roles', 'RolesController');
