@@ -306,9 +306,8 @@ $(document)
         });
     })
     .on('change', '.select-city-to-add', function () {
-        $(document)
-            .find('.created-row')
-            .remove();
+        $(document).find('.created-row').remove();
+        $(document).find('option[value="'+ null +'"]').attr('selected', false);
 
         var item = $(this);
         var dataCityId = $('.select-city-to-add option:selected').attr('data-cityid');
@@ -353,13 +352,22 @@ $(document)
                 'Add' +
                 '</a>' + ' ' +
                 '<a href="#" ' +
-                'class="btn btn-danger btn-xs city-to-go-remove-all" ' +
+                'class="btn btn-danger btn-xs remove-raw" ' +
                 'data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'">' +
                 'Remove' +
                 '</a>' +
                 '</td>' +
                 '</tr>'
             );
+    })
+    .on('click', '.remove-raw', function () {
+        var item = $(this);
+
+        $(document)
+            .find('tr[data-cityid="' + item.attr('data-cityid') + '"][data-citytogo="' + item.attr('data-citytogo') + '"]')
+            .remove();
+
+        $(document).find('option[value="'+ null +'"]').attr('selected', 'selected');
     })
     .on('click', '.city-to-go-remove-all', function () {
         var item = $(this);
