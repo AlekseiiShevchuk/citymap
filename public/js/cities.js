@@ -347,8 +347,9 @@ $(document)
                 '</td>' +
                 '<td>' +
                 '<a href="#" ' +
-                'class="btn btn-success btn-xs city-to-go-remove-all" ' +
-                'data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'">' +
+                'class="btn btn-success btn-xs add-city-select-option" ' +
+                'data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'"' +
+                ' data-addbtn="addbtn">' +
                 'Add' +
                 '</a>' + ' ' +
                 '<a href="#" ' +
@@ -442,6 +443,84 @@ $(document)
                 }
             });
         }
+    })
+    .on('click', '.add-city-select-option', function () {
+        var item = $(this);
+        var data = {
+            city: item.attr('data-cityid'),
+            cityToAdd: item.attr('data-citytogo'),
+            bySelectOption: true
+        };
+
+        if ($('input[name=car]').prop('checked')) {
+            data.car = 1;
+        }
+        if ($('input[name=train]').prop('checked')) {
+            data.train = 1;
+        }
+        if ($('input[name=plane]').prop('checked')) {
+            data.plain = 1;
+        }
+
+        $.ajax({
+            url: '/ajax/add-city-to-go',
+            method: "POST",
+            data: data,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            success: function (data) {
+                if (data.status) {
+                    $(document)
+                        .find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
+                        .remove();
+                    $(document).find('option[value="'+ null +'"]').attr('selected', 'selected');
+                    $(document)
+                        .find('tbody[data-cityid="' + data.city_id + '"]')
+                        .prepend(
+                            '<tr data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'">' +
+                            '<td>' +
+                            'ppp' +
+                            '</td>' +
+                            '<td class="' + data.carPriceClass +'" data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="1">' +
+                            data.carPrice +
+                            '</td>' +
+                            '<td>' +
+                            '<input ' +
+                            'class="city-to-go-checkbox" ' +
+                            'data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="1" ' +
+                            'value="' + data.carCheckboxValue +'" ' + data.isCarCheckboxChecked +' type="checkbox">' +
+                            '</td>' +
+                            '<td class="' + data.trainPriceClass +'" data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="2">' +
+                            data.trainPrice +
+                            '</td>' +
+                            '<td>' +
+                            '<input ' +
+                            'class="city-to-go-checkbox" ' +
+                            'data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="2" ' +
+                            'value="' + data.trainCheckboxValue +'" ' + data.isTrainCheckboxChecked +' type="checkbox">' +
+                            '</td>' +
+                            '<td class="' + data.planePriceClass +'" data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="3">' +
+                            data.planePrice +
+                            '</td>' +
+                            '<td>' +
+                            '<input ' +
+                            'class="city-to-go-checkbox" ' +
+                            'data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="3" ' +
+                            'value="' + data.planeCheckboxValue +'" ' + data.isPlaneCheckboxChecked +' type="checkbox">' +
+                            '</td>' +
+                            '<td>' +
+                            '<a href="#" ' +
+                            'class="btn btn-danger btn-xs city-to-go-remove-all" ' +
+                            'data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'">' +
+                            'Remove' +
+                            '</a>' +
+                            '</td>' +
+                            '</tr>'
+                        );
+                }
+            }
+        });
     })
     .on('click', '.add-city', function () {
         var data = {

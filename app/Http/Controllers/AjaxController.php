@@ -163,6 +163,12 @@ class AjaxController extends Controller
         ])->first();
 
         if ($city instanceof CityTransfer && $cityToAdd instanceof CityTransfer) {
+            $data = [
+                'status' => true,
+                'city_id' => $request->city,
+                'city_to_go' => $request->cityToAdd
+            ];
+            
             if (isset($request->car)) {
                 $city->is_possible_to_get_by_car = $request->car;
                 $cityToAdd->is_possible_to_get_by_car = $request->car;
@@ -178,12 +184,26 @@ class AjaxController extends Controller
 
             $city->save();
             $cityToAdd->save();
+            
+            if (isset($request->bySelectOption) && $request->bySelectOption) {
+                $data['carPrice'] = $city->is_possible_to_get_by_car ? $city->price_by_car : '-';
+                $data['trainPrice'] = $city->is_possible_to_get_by_train ? $city->price_by_train : '-';
+                $data['planePrice'] = $city->is_possible_to_get_by_plane ? $city->price_by_plane : '-';
+                $data['carPriceClass'] = $city->is_possible_to_get_by_car ? 'city-to-go-fix-price'
+                    : 'city-to-go-fix-price-not-active';
+                $data['trainPriceClass'] = $city->is_possible_to_get_by_train ? 'city-to-go-fix-price'
+                    : 'city-to-go-fix-price-not-active';
+                $data['planePriceClass'] = $city->is_possible_to_get_by_plane ? 'city-to-go-fix-price'
+                    : 'city-to-go-fix-price-not-active';
+                $data['isCarCheckboxChecked'] = $city->is_possible_to_get_by_car ? 'checked' : '';
+                $data['isTrainCheckboxChecked'] = $city->is_possible_to_get_by_train ? 'checked' : '';
+                $data['isPlaneCheckboxChecked'] = $city->is_possible_to_get_by_plane ? 'checked' : '';
+                $data['carCheckboxValue'] = $city->is_possible_to_get_by_car ? 0 : 1;
+                $data['trainCheckboxValue'] = $city->is_possible_to_get_by_train ? 0 : 1;
+                $data['planeCheckboxValue'] = $city->is_possible_to_get_by_plane ? 0 : 1;
+            }
 
-            return response()->json([
-                'status' => true,
-                'city_id' => $request->city,
-                'city_to_go' => $request->cityToAdd
-            ]);
+            return response()->json($data);
         }
     }
 }
