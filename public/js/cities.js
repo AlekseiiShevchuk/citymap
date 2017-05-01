@@ -33,7 +33,10 @@ function initMap()
                             name: dataCitiesToGo[j].name_en,
                             getByCar: false,
                             getByTrain: false,
-                            getByPlain: false
+                            getByPlain: false,
+                            priceByCar: dataCitiesToGo[j].price_by_car,
+                            priceByTrain: dataCitiesToGo[j].price_by_train,
+                            priceByPlain: dataCitiesToGo[j].price_by_plane
                         });
                     } else {
                         city.citiesToGo.push({
@@ -143,7 +146,10 @@ function initMap()
                 selectOptions[i] = '';
                 for (k = 0; k < citiesToAdd.length; k++) {
                     selectOptions[i] +=
-                        '<option data-cityid="' + cities[i].id +'" data-citytoadd="' + citiesToAdd[k].id +'">' +
+                        '<option data-cityid="' + cities[i].id +'" data-citytoadd="' + citiesToAdd[k].id +'"' +
+                        ' data-carprice="'+ citiesToAdd[k].priceByCar +'"' +
+                        ' data-trainprice="'+ citiesToAdd[k].priceByTrain +'"' +
+                        ' data-planeprice="'+ citiesToAdd[k].priceByPlain +'">' +
                         citiesToAdd[k].name +
                         '</option>'
                     ;
@@ -177,7 +183,7 @@ function initMap()
                             '<th>Plain</th>' +
                             '<th>Options</th>' +
                             '</thead>' +
-                            '<tbody>' +
+                            '<tbody data-cityid="'+ cities[i].id +'">' +
                             tBody[i]+
                             '</tbody>' +
                             '</table>'+
@@ -300,10 +306,60 @@ $(document)
         });
     })
     .on('change', '.select-city-to-add', function () {
+        $(document)
+            .find('.created-row')
+            .remove();
+
         var item = $(this);
-        var dataCityId = item.attr('data-cityid');
-        var dataCityToAdd = item.attr('data-citytoadd');
+        var dataCityId = $('.select-city-to-add option:selected').attr('data-cityid');
+        var dataCityToAdd = $('.select-city-to-add option:selected').attr('data-citytoadd');
+        var carPrice = $('.select-city-to-add option:selected').attr('data-carprice');
+        var trainPrice = $('.select-city-to-add option:selected').attr('data-trainprice');
+        var planePrice = $('.select-city-to-add option:selected').attr('data-planeprice');
         var optionValue = item.val();
+
+        $(document)
+            .find('tbody[data-cityid="' + dataCityId + '"]')
+            .prepend(
+                '<tr data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'" class="created-row">' +
+                '<td>' +
+                optionValue +
+                '</td>' +
+                '<td class="city-to-go-fix-price" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'" data-type="1">' +
+                carPrice +
+                '</td>' +
+                '<td>' +
+                '<input name="car" ' +
+                'value="1" type="checkbox">' +
+                '</td>' +
+                '<td class="city-to-go-fix-price" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'" data-type="2">' +
+                trainPrice +
+                '</td>' +
+                '<td>' +
+                '<input name="train" ' +
+                'value="2" type="checkbox">' +
+                '</td>' +
+                '<td class="city-to-go-fix-price" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'" data-type="3">' +
+                planePrice +
+                '</td>' +
+                '<td>' +
+                '<input name="plane" ' +
+                'value="3" type="checkbox">' +
+                '</td>' +
+                '<td>' +
+                '<a href="#" ' +
+                'class="btn btn-success btn-xs city-to-go-remove-all" ' +
+                'data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'">' +
+                'Add' +
+                '</a>' + ' ' +
+                '<a href="#" ' +
+                'class="btn btn-danger btn-xs city-to-go-remove-all" ' +
+                'data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'">' +
+                'Remove' +
+                '</a>' +
+                '</td>' +
+                '</tr>'
+            );
     })
     .on('click', '.city-to-go-remove-all', function () {
         var item = $(this);
@@ -342,7 +398,7 @@ $(document)
         item.hide();
         previousItem.after(
             '<input type="text" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToGo +'"' +
-            ' data-type="' + dataType +'" value="' + inputValue +'" class="input-send-fixed-price form-control">'
+            ' data-type="' + dataType +'" value="' + inputValue +'" class="input-send-fixed-price">'
         );
         isInputPriceReady = true;
     })
