@@ -67,6 +67,7 @@ function initMap()
             });
 
             var tBody = [];
+            var selectOptions = [];
             for (i = 0; i < cities.length; i++) {
                 var marker = new google.maps.Marker({
                     position: {lat: cities[i].latitude, lng: cities[i].longitude},
@@ -127,13 +128,24 @@ function initMap()
                         'value="' + plainCheckboxValue +'" ' + plainIsChecked +' type="checkbox">' +
                         '</td>' +
                         '<td>' +
-                        '<span ' +
-                        'class="badge city-to-go-remove-all" ' +
+                        '<a href="#" ' +
+                        'class="btn btn-danger btn-xs city-to-go-remove-all" ' +
                         'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">' +
-                        'X' +
-                        '</span>' +
+                        'Remove' +
+                        '</a>' +
                         '</td>' +
                         '</tr>'
+                    ;
+                }
+
+                var citiesToAdd = cities[i].citiesToAdd;
+
+                selectOptions[i] = '';
+                for (k = 0; k < citiesToAdd.length; k++) {
+                    selectOptions[i] +=
+                        '<option data-cityid="' + cities[i].id +'" data-citytoadd="' + citiesToAdd[k].id +'">' +
+                        citiesToAdd[k].name +
+                        '</option>'
                     ;
                 }
 
@@ -145,6 +157,13 @@ function initMap()
                             '<h2>' +
                             cities[i].name +
                             '</h2>' +
+                            '<div id="citiesToAdd">' +
+                            '<h3>Cities to add</h3>' +
+                            '<select class="form-control select-city-to-add">' +
+                            '<option value="'+ null +'">-</option>' +
+                             selectOptions[i] +
+                            '</select>' +
+                            '</div>' +
                             '<div id="citiesToGo">' +
                             '<h3>Cities to go: </h3>'+
                             '<table class="table" data-cityid="'+ cities[i].id +'">'+
@@ -156,7 +175,7 @@ function initMap()
                             '<th>Train</th>' +
                             '<th>Price by plain</th>' +
                             '<th>Plain</th>' +
-                            '<th>Remove all</th>' +
+                            '<th>Options</th>' +
                             '</thead>' +
                             '<tbody>' +
                             tBody[i]+
@@ -280,7 +299,13 @@ $(document)
             }
         });
     })
-    .on('dblclick', '.city-to-go-remove-all', function () {
+    .on('change', '.select-city-to-add', function () {
+        var item = $(this);
+        var dataCityId = item.attr('data-cityid');
+        var dataCityToAdd = item.attr('data-citytoadd');
+        var optionValue = item.val();
+    })
+    .on('click', '.city-to-go-remove-all', function () {
         var item = $(this);
         var data = {
             cityId: item.attr('data-cityid'),
@@ -317,7 +342,7 @@ $(document)
         item.hide();
         previousItem.after(
             '<input type="text" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToGo +'"' +
-            ' data-type="' + dataType +'" value="' + inputValue +'" class="input-send-fixed-price">'
+            ' data-type="' + dataType +'" value="' + inputValue +'" class="input-send-fixed-price form-control">'
         );
         isInputPriceReady = true;
     })
