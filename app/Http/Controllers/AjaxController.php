@@ -201,6 +201,7 @@ class AjaxController extends Controller
                 $data['carCheckboxValue'] = $city->is_possible_to_get_by_car ? 0 : 1;
                 $data['trainCheckboxValue'] = $city->is_possible_to_get_by_train ? 0 : 1;
                 $data['planeCheckboxValue'] = $city->is_possible_to_get_by_plane ? 0 : 1;
+                $data['name'] = $request->cityToAddName;
             }
 
             return response()->json($data);

@@ -145,11 +145,13 @@ function initMap()
 
                 selectOptions[i] = '';
                 for (k = 0; k < citiesToAdd.length; k++) {
+                    var identifier = 'option' + cities[i].id + citiesToAdd[k].id;
                     selectOptions[i] +=
                         '<option data-cityid="' + cities[i].id +'" data-citytoadd="' + citiesToAdd[k].id +'"' +
                         ' data-carprice="'+ citiesToAdd[k].priceByCar +'"' +
                         ' data-trainprice="'+ citiesToAdd[k].priceByTrain +'"' +
-                        ' data-planeprice="'+ citiesToAdd[k].priceByPlain +'">' +
+                        ' data-planeprice="'+ citiesToAdd[k].priceByPlain +'"' +
+                        ' data-name="'+ citiesToAdd[k].name +'" id="'+ identifier +'">' +
                         citiesToAdd[k].name +
                         '</option>'
                     ;
@@ -315,6 +317,7 @@ $(document)
         var carPrice = $('.select-city-to-add option:selected').attr('data-carprice');
         var trainPrice = $('.select-city-to-add option:selected').attr('data-trainprice');
         var planePrice = $('.select-city-to-add option:selected').attr('data-planeprice');
+        var dataCityToAddName = $('.select-city-to-add option:selected').attr('data-name');
         var optionValue = item.val();
 
         $(document)
@@ -349,7 +352,7 @@ $(document)
                 '<a href="#" ' +
                 'class="btn btn-success btn-xs add-city-select-option" ' +
                 'data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'"' +
-                ' data-addbtn="addbtn">' +
+                ' data-name="'+ dataCityToAddName +'">' +
                 'Add' +
                 '</a>' + ' ' +
                 '<a href="#" ' +
@@ -449,6 +452,7 @@ $(document)
         var data = {
             city: item.attr('data-cityid'),
             cityToAdd: item.attr('data-citytogo'),
+            cityToAddName: item.attr('data-name'),
             bySelectOption: true
         };
 
@@ -474,13 +478,16 @@ $(document)
                     $(document)
                         .find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
                         .remove();
+                    $(document)
+                        .find('#option' + data.city_id + data.city_to_go)
+                        .remove();
                     $(document).find('option[value="'+ null +'"]').attr('selected', 'selected');
                     $(document)
                         .find('tbody[data-cityid="' + data.city_id + '"]')
                         .prepend(
                             '<tr data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'">' +
                             '<td>' +
-                            'ppp' +
+                            data.name +
                             '</td>' +
                             '<td class="' + data.carPriceClass +'" data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="1">' +
                             data.carPrice +
