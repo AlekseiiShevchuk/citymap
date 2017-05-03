@@ -2,12 +2,24 @@
     height: 600px;
     width: 850px;
 }
-.city-to-go {
+.city-to-go-remove-all {
     cursor: pointer;
 }
-.city-to-go-not-active {
+.city-to-go-fix-price {
+    cursor: pointer;
+}
+.city-to-go-fix-price-not-active {
     pointer-events: none;
     cursor: default;
+}
+.hidden-price {
+
+}
+.created-row {
+
+}
+.remove-raw {
+
 }
 #loader {
     width: 45px;

@@ -2,6 +2,7 @@ var cities = [];
 var combineCities = [];
 var markers = [];
 var combineCitiesObjects = [];
+var isInputPriceReady = false;
 
 function initMap()
 {
@@ -32,7 +33,10 @@ function initMap()
                             name: dataCitiesToGo[j].name_en,
                             getByCar: false,
                             getByTrain: false,
-                            getByPlain: false
+                            getByPlain: false,
+                            priceByCar: dataCitiesToGo[j].price_by_car,
+                            priceByTrain: dataCitiesToGo[j].price_by_train,
+                            priceByPlain: dataCitiesToGo[j].price_by_plane
                         });
                     } else {
                         city.citiesToGo.push({
@@ -43,7 +47,7 @@ function initMap()
                             getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane,
                             priceByCar: dataCitiesToGo[j].price_by_car,
                             priceByTrain: dataCitiesToGo[j].price_by_train,
-                            priceByPlain: dataCitiesToGo[j].price_by_train
+                            priceByPlain: dataCitiesToGo[j].price_by_plane
                         });
                     }
                     city.allCities.push({
@@ -66,6 +70,7 @@ function initMap()
             });
 
             var tBody = [];
+            var selectOptions = [];
             for (i = 0; i < cities.length; i++) {
                 var marker = new google.maps.Marker({
                     position: {lat: cities[i].latitude, lng: cities[i].longitude},
@@ -77,53 +82,78 @@ function initMap()
 
                 tBody[i] = '';
                 for (j = 0; j < citiesToGo.length; j++) {
-                    var carDeleteClass = citiesToGo[j].getByCar ? 'city-to-go' : 'city-to-go-not-active';
-                    var trainDeleteClass = citiesToGo[j].getByTrain ? 'city-to-go' : 'city-to-go-not-active';
-                    var plainDeleteClass = citiesToGo[j].getByPlain ? 'city-to-go' : 'city-to-go-not-active';
+                    var carIsChecked = citiesToGo[j].getByCar ? 'checked' : '';
+                    var trainIsChecked = citiesToGo[j].getByTrain ? 'checked' : '';
+                    var plainIsChecked = citiesToGo[j].getByPlain ? 'checked' : '';
+
+                    var carCheckboxValue = citiesToGo[j].getByCar ? 0 : 1;
+                    var trainCheckboxValue = citiesToGo[j].getByTrain ? 0 : 1;
+                    var plainCheckboxValue = citiesToGo[j].getByPlain ? 0 : 1;
+
+                    var carPriceValue = citiesToGo[j].getByCar ? citiesToGo[j].priceByCar : '-';
+                    var trainPriceValue = citiesToGo[j].getByTrain ? citiesToGo[j].priceByTrain : '-';
+                    var plainPriceValue = citiesToGo[j].getByPlain ? citiesToGo[j].priceByPlain : '-';
+
+                    var carFixPriceClass = citiesToGo[j].getByCar ? 'city-to-go-fix-price' : 'city-to-go-fix-price-not-active';
+                    var trainFixPriceClass  = citiesToGo[j].getByTrain ? 'city-to-go-fix-price' : 'city-to-go-fix-price-not-active';
+                    var plainFixPriceClass  = citiesToGo[j].getByPlain ? 'city-to-go-fix-price' : 'city-to-go-fix-price-not-active';
 
                     tBody[i] +=
                         '<tr data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">' +
                         '<td>' +
                         citiesToGo[j].name +
                         '</td>' +
-                        '<td>' +
-                        citiesToGo[j].priceByCar +
+                        '<td class="' + carFixPriceClass +'" data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1">' +
+                        carPriceValue +
                         '</td>' +
                         '<td>' +
-                        '<span ' +
-                        'class="badge ' + carDeleteClass +'" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1">' +
-                        'X' +
-                        '</span>' +
+                        '<input ' +
+                        'class="city-to-go-checkbox" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="1" ' +
+                        'value="' + carCheckboxValue +'" ' + carIsChecked +' type="checkbox">' +
+                        '</td>' +
+                        '<td class="' + trainFixPriceClass +'" data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
+                        trainPriceValue +
                         '</td>' +
                         '<td>' +
-                        citiesToGo[j].priceByTrain +
+                        '<input ' +
+                        'class="city-to-go-checkbox" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2" ' +
+                        'value="' + trainCheckboxValue +'" ' + trainIsChecked +' type="checkbox">' +
+                        '</td>' +
+                        '<td class="' + plainFixPriceClass +'" data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
+                        plainPriceValue +
                         '</td>' +
                         '<td>' +
-                        '<span ' +
-                        'class="badge ' + trainDeleteClass +'" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="2">' +
-                         'X' +
-                        '</span>' +
+                        '<input ' +
+                        'class="city-to-go-checkbox" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3" ' +
+                        'value="' + plainCheckboxValue +'" ' + plainIsChecked +' type="checkbox">' +
                         '</td>' +
                         '<td>' +
-                        citiesToGo[j].priceByPlain +
-                        '</td>' +
-                        '<td>' +
-                        '<span ' +
-                        'class="badge ' + plainDeleteClass +'" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="3">' +
-                        'X' +
-                        '</span>' +
-                        '</td>' +
-                        '<td>' +
-                        '<span ' +
-                        'class="badge city-to-go" ' +
-                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'" data-type="4">' +
-                        'X' +
-                        '</span>' +
+                        '<a href="#" ' +
+                        'class="btn btn-danger btn-xs city-to-go-remove-all" ' +
+                        'data-cityid="' + cities[i].id +'" data-citytogo="' + citiesToGo[j].id +'">' +
+                        'Remove' +
+                        '</a>' +
                         '</td>' +
                         '</tr>'
+                    ;
+                }
+
+                var citiesToAdd = cities[i].citiesToAdd;
+
+                selectOptions[i] = '';
+                for (k = 0; k < citiesToAdd.length; k++) {
+                    var identifier = 'option' + cities[i].id + citiesToAdd[k].id;
+                    selectOptions[i] +=
+                        '<option data-cityid="' + cities[i].id +'" data-citytoadd="' + citiesToAdd[k].id +'"' +
+                        ' data-carprice="'+ citiesToAdd[k].priceByCar +'"' +
+                        ' data-trainprice="'+ citiesToAdd[k].priceByTrain +'"' +
+                        ' data-planeprice="'+ citiesToAdd[k].priceByPlain +'"' +
+                        ' data-name="'+ citiesToAdd[k].name +'" id="'+ identifier +'">' +
+                        citiesToAdd[k].name +
+                        '</option>'
                     ;
                 }
 
@@ -135,20 +165,27 @@ function initMap()
                             '<h2>' +
                             cities[i].name +
                             '</h2>' +
+                            '<div id="citiesToAdd">' +
+                            '<h3>Cities to add</h3>' +
+                            '<select class="form-control select-city-to-add">' +
+                            '<option value="'+ null +'">-</option>' +
+                             selectOptions[i] +
+                            '</select>' +
+                            '</div>' +
                             '<div id="citiesToGo">' +
                             '<h3>Cities to go: </h3>'+
                             '<table class="table" data-cityid="'+ cities[i].id +'">'+
                             '<thead>' +
                             '<th>Name</th>' +
                             '<th>Price by car</th>' +
-                            '<th>Remove by car</th>' +
+                            '<th>Car</th>' +
                             '<th>Price by train</th>' +
-                            '<th>Remove by train</th>' +
+                            '<th>Train</th>' +
                             '<th>Price by plain</th>' +
-                            '<th>Remove by plain</th>' +
-                            '<th>Remove all</th>' +
+                            '<th>Plain</th>' +
+                            '<th>Options</th>' +
                             '</thead>' +
-                            '<tbody>' +
+                            '<tbody data-cityid="'+ cities[i].id +'">' +
                             tBody[i]+
                             '</tbody>' +
                             '</table>'+
@@ -234,12 +271,113 @@ function initMap()
 }
 
 $(document)
-    .on('dblclick', '.city-to-go', function () {
+    .on('change', '.city-to-go-checkbox', function () {
         var item = $(this);
         var data = {
             cityId: item.attr('data-cityid'),
             cityToGo: item.attr('data-citytogo'),
-            type: item.attr('data-type')
+            type: item.attr('data-type'),
+            value: item.val()
+        };
+
+        $.ajax({
+            url: '/ajax/add-or-remove-traffic-option',
+            method: "POST",
+            data: data,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            success: function (data) {
+                if (data.status) {
+                    if (!data.isPossibleToGet) {
+                        $(document)
+                            .find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
+                            .remove();
+                    } else {
+                        $(document)
+                            .find('input[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
+                            .val(data.response_value);
+                        $(document)
+                            .find('td[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
+                            .toggleClass('city-to-go-fix-price')
+                            .toggleClass('city-to-go-fix-price-not-active')
+                            .html(data.price);
+                    }
+                }
+            }
+        });
+    })
+    .on('change', '.select-city-to-add', function () {
+        $(document).find('.created-row').remove();
+        $(document).find('option[value="'+ null +'"]').attr('selected', false);
+
+        var item = $(this);
+        var dataCityId = $('.select-city-to-add option:selected').attr('data-cityid');
+        var dataCityToAdd = $('.select-city-to-add option:selected').attr('data-citytoadd');
+        var carPrice = $('.select-city-to-add option:selected').attr('data-carprice');
+        var trainPrice = $('.select-city-to-add option:selected').attr('data-trainprice');
+        var planePrice = $('.select-city-to-add option:selected').attr('data-planeprice');
+        var dataCityToAddName = $('.select-city-to-add option:selected').attr('data-name');
+        var optionValue = item.val();
+
+        $(document)
+            .find('tbody[data-cityid="' + dataCityId + '"]')
+            .prepend(
+                '<tr data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'" class="created-row">' +
+                '<td>' +
+                optionValue +
+                '</td>' +
+                '<td class="city-to-go-fix-price" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'" data-type="1">' +
+                carPrice +
+                '</td>' +
+                '<td>' +
+                '<input name="car" ' +
+                'value="1" type="checkbox">' +
+                '</td>' +
+                '<td class="city-to-go-fix-price" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'" data-type="2">' +
+                trainPrice +
+                '</td>' +
+                '<td>' +
+                '<input name="train" ' +
+                'value="2" type="checkbox">' +
+                '</td>' +
+                '<td class="city-to-go-fix-price" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'" data-type="3">' +
+                planePrice +
+                '</td>' +
+                '<td>' +
+                '<input name="plane" ' +
+                'value="3" type="checkbox">' +
+                '</td>' +
+                '<td>' +
+                '<a href="#" ' +
+                'class="btn btn-success btn-xs add-city-select-option" ' +
+                'data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'"' +
+                ' data-name="'+ dataCityToAddName +'">' +
+                'Add' +
+                '</a>' + ' ' +
+                '<a href="#" ' +
+                'class="btn btn-danger btn-xs remove-raw" ' +
+                'data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToAdd +'">' +
+                'Remove' +
+                '</a>' +
+                '</td>' +
+                '</tr>'
+            );
+    })
+    .on('click', '.remove-raw', function () {
+        var item = $(this);
+
+        $(document)
+            .find('tr[data-cityid="' + item.attr('data-cityid') + '"][data-citytogo="' + item.attr('data-citytogo') + '"]')
+            .remove();
+
+        $(document).find('option[value="'+ null +'"]').attr('selected', 'selected');
+    })
+    .on('click', '.city-to-go-remove-all', function () {
+        var item = $(this);
+        var data = {
+            cityId: item.attr('data-cityid'),
+            cityToGo: item.attr('data-citytogo')
         };
 
         $.ajax({
@@ -251,13 +389,142 @@ $(document)
             },
             success: function (data) {
                 if (data.status) {
-                    if (data.typeId == 4 || !data.isPossibleToGet) {
-                        $(document).find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
+                    $(document)
+                        .find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
+                        .remove();
+                }
+            }
+        });
+    })
+    .on('dblclick', '.city-to-go-fix-price', function () {
+        $(document).find('.input-send-fixed-price').remove();
+        $(document).find('.hidden-price').show().removeClass('hidden-price');
+
+        var item = $(this);
+        item.addClass('hidden-price');
+        var dataCityId = item.attr('data-cityid');
+        var dataCityToGo = item.attr('data-citytogo');
+        var dataType = item.attr('data-type');
+        var inputValue = item.html();
+        var previousItem = item.prev();
+        item.hide();
+        previousItem.after(
+            '<input type="text" data-cityid="' + dataCityId +'" data-citytogo="' + dataCityToGo +'"' +
+            ' data-type="' + dataType +'" value="' + inputValue +'" class="input-send-fixed-price">'
+        );
+        isInputPriceReady = true;
+    })
+    .keypress(function(e) {
+        if(e.which == 13 && isInputPriceReady) {
+            var item = $(document)
+                .find('input[class="input-send-fixed-price"][type=text]');
+            var data = {
+                cityId: item.attr('data-cityid'),
+                cityToGo: item.attr('data-citytogo'),
+                type: item.attr('data-type'),
+                value: item.val()
+            };
+
+            $.ajax({
+                url: '/ajax/change-price',
+                method: "POST",
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                },
+                success: function (data) {
+                    if (data.status) {
+                        $(document)
+                            .find('input[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"][type=text]')
                             .remove();
-                    } else {
-                        $(document).find('span[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
-                            .removeClass('city-to-go').addClass('city-to-go-not-active');
+                        $(document)
+                            .find('td[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"][data-type="' + data.typeId + '"]')
+                            .html(data.response_value)
+                            .show();
+                        isInputPriceReady = false;
                     }
+                }
+            });
+        }
+    })
+    .on('click', '.add-city-select-option', function () {
+        var item = $(this);
+        var data = {
+            city: item.attr('data-cityid'),
+            cityToAdd: item.attr('data-citytogo'),
+            cityToAddName: item.attr('data-name'),
+            bySelectOption: true
+        };
+
+        if ($('input[name=car]').prop('checked')) {
+            data.car = 1;
+        }
+        if ($('input[name=train]').prop('checked')) {
+            data.train = 1;
+        }
+        if ($('input[name=plane]').prop('checked')) {
+            data.plain = 1;
+        }
+
+        $.ajax({
+            url: '/ajax/add-city-to-go',
+            method: "POST",
+            data: data,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            success: function (data) {
+                if (data.status) {
+                    $(document)
+                        .find('tr[data-cityid="' + data.city_id + '"][data-citytogo="' + data.city_to_go + '"]')
+                        .remove();
+                    $(document)
+                        .find('#option' + data.city_id + data.city_to_go)
+                        .remove();
+                    $(document).find('option[value="'+ null +'"]').attr('selected', 'selected');
+                    $(document)
+                        .find('tbody[data-cityid="' + data.city_id + '"]')
+                        .prepend(
+                            '<tr data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'">' +
+                            '<td>' +
+                            data.name +
+                            '</td>' +
+                            '<td class="' + data.carPriceClass +'" data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="1">' +
+                            data.carPrice +
+                            '</td>' +
+                            '<td>' +
+                            '<input ' +
+                            'class="city-to-go-checkbox" ' +
+                            'data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="1" ' +
+                            'value="' + data.carCheckboxValue +'" ' + data.isCarCheckboxChecked +' type="checkbox">' +
+                            '</td>' +
+                            '<td class="' + data.trainPriceClass +'" data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="2">' +
+                            data.trainPrice +
+                            '</td>' +
+                            '<td>' +
+                            '<input ' +
+                            'class="city-to-go-checkbox" ' +
+                            'data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="2" ' +
+                            'value="' + data.trainCheckboxValue +'" ' + data.isTrainCheckboxChecked +' type="checkbox">' +
+                            '</td>' +
+                            '<td class="' + data.planePriceClass +'" data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="3">' +
+                            data.planePrice +
+                            '</td>' +
+                            '<td>' +
+                            '<input ' +
+                            'class="city-to-go-checkbox" ' +
+                            'data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'" data-type="3" ' +
+                            'value="' + data.planeCheckboxValue +'" ' + data.isPlaneCheckboxChecked +' type="checkbox">' +
+                            '</td>' +
+                            '<td>' +
+                            '<a href="#" ' +
+                            'class="btn btn-danger btn-xs city-to-go-remove-all" ' +
+                            'data-cityid="' + data.city_id +'" data-citytogo="' + data.city_to_go +'">' +
+                            'Remove' +
+                            '</a>' +
+                            '</td>' +
+                            '</tr>'
+                        );
                 }
             }
         });
@@ -298,7 +565,7 @@ $(document)
                     setTimeout(function () {
                         $('#loader').toggleClass('display-none');
                     }, 2500);
-                    initMap(true);
+                    initMap();
                 }
             }
         });
