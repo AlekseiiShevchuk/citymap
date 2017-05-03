@@ -3,6 +3,26 @@ var combineCities = [];
 var markers = [];
 var combineCitiesObjects = [];
 var isInputPriceReady = false;
+var directionService = {};
+
+function displayRoute(startLatLong, endLatLong)
+{
+    var request = {
+        origin: startLatLong,
+        destination: endLatLong,
+        travelMode: google.maps.DirectionsTravelMode.DRIVING
+    };
+
+    directionService.route(request, function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            var directionsDisplay = new google.maps.DirectionsRenderer({
+                map: map,
+                preserveViewport: true
+            });
+            directionsDisplay.setDirections(response);
+        }
+    });
+}
 
 function initMap()
 {
@@ -17,6 +37,7 @@ function initMap()
                 var city = {
                     id: data[i].id,
                     name: data[i].name_en,
+                    country: data[i].country,
                     latitude: data[i].latitude,
                     longitude: data[i].longitude,
                     citiesToGo: [],
@@ -47,7 +68,9 @@ function initMap()
                             getByPlain: dataCitiesToGo[j].is_possible_to_get_by_plane,
                             priceByCar: dataCitiesToGo[j].price_by_car,
                             priceByTrain: dataCitiesToGo[j].price_by_train,
-                            priceByPlain: dataCitiesToGo[j].price_by_plane
+                            priceByPlain: dataCitiesToGo[j].price_by_plane,
+                            latitude: dataCitiesToGo[j].latitude,
+                            longitude: dataCitiesToGo[j].longitude
                         });
                     }
                     city.allCities.push({
@@ -77,6 +100,8 @@ function initMap()
                     map: map,
                     icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
                 });
+
+                directionService = new google.maps.DirectionsService();
 
                 var citiesToGo = cities[i].citiesToGo;
 
@@ -265,6 +290,21 @@ function initMap()
                     }
                     markers = [];
                 });
+
+                google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+                    return function() {
+                        for (j = 0; j < citiesToGo.length; j++) {
+                            displayRoute({
+                                lat: citiesToGo[j].latitude,
+                                lng: citiesToGo[j].longitude
+                            }, cities[i].name + ', ' + cities[i].country);
+                            displayRoute({
+                                lat: citiesToGo[j].latitude,
+                                lng: citiesToGo[j].longitude
+                            }, cities[i].name + ', ' + cities[i].country);
+                        }
+                    }
+                })(marker, i));
             }
         }
     });
