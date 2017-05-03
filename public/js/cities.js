@@ -4,7 +4,7 @@ var markers = [];
 var combineCitiesObjects = [];
 var isInputPriceReady = false;
 var directionService = {};
-var directionDisplayCollcetion = [];
+var directionDisplayCollection = [];
 
 function displayRoute(startLatLong, endLatLong)
 {
@@ -22,7 +22,7 @@ function displayRoute(startLatLong, endLatLong)
                 suppressMarkers: true
             });
             directionsDisplay.setDirections(response);
-            directionDisplayCollcetion.push(directionsDisplay);
+            directionDisplayCollection.push(directionsDisplay);
         }
     });
 }
@@ -294,7 +294,7 @@ function initMap()
                     markers = [];
                 });
 
-                google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+                google.maps.event.addListener(marker, 'mouseover', (function(marker, i, citiesToGo) {
                     return function() {
                         for (j = 0; j < citiesToGo.length; j++) {
                             displayRoute({
@@ -303,14 +303,14 @@ function initMap()
                             }, cities[i].name + ', ' + cities[i].country);
                         }
                     }
-                })(marker, i));
+                })(marker, i, citiesToGo));
 
                 google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
                     return function() {
-                        for (j = 0; j < directionDisplayCollcetion.length; j++) {
-                            directionDisplayCollcetion[j].setMap(null);
+                        for (j = 0; j < directionDisplayCollection.length; j++) {
+                            directionDisplayCollection[j].setMap(null);
                         }
-                        directionDisplayCollcetion = [];
+                        directionDisplayCollection = [];
                     }
                 })(marker, i));
             }
