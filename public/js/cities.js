@@ -294,7 +294,7 @@ function initMap()
                     markers = [];
                 });
 
-                google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+                google.maps.event.addListener(marker, 'mouseover', (function(marker, i, citiesToGo) {
                     return function() {
                         for (j = 0; j < citiesToGo.length; j++) {
                             displayRoute({
@@ -303,7 +303,7 @@ function initMap()
                             }, cities[i].name + ', ' + cities[i].country);
                         }
                     }
-                })(marker, i));
+                })(marker, i, citiesToGo));
 
                 google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
                     return function() {
