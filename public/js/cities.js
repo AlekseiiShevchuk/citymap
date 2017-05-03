@@ -23,9 +23,6 @@ function displayRoute(startLatLong, endLatLong)
             });
             directionsDisplay.setDirections(response);
             directionDisplayCollection.push(directionsDisplay);
-            if (directionDisplayCollection.length > 2) {
-
-            }
         }
     });
 }
