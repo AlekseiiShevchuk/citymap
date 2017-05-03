@@ -4,6 +4,7 @@ var markers = [];
 var combineCitiesObjects = [];
 var isInputPriceReady = false;
 var directionService = {};
+var directionDisplayCollcetion = [];
 
 function displayRoute(startLatLong, endLatLong)
 {
@@ -21,6 +22,7 @@ function displayRoute(startLatLong, endLatLong)
                 suppressMarkers: true
             });
             directionsDisplay.setDirections(response);
+            directionDisplayCollcetion.push(directionsDisplay);
         }
     });
 }
@@ -300,6 +302,15 @@ function initMap()
                                 lng: citiesToGo[j].longitude
                             }, cities[i].name + ', ' + cities[i].country);
                         }
+                    }
+                })(marker, i));
+
+                google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
+                    return function() {
+                        for (j = 0; j < directionDisplayCollcetion.length; j++) {
+                            directionDisplayCollcetion[j].setMap(null);
+                        }
+                        directionDisplayCollcetion = [];
                     }
                 })(marker, i));
             }
