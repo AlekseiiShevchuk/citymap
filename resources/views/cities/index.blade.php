@@ -104,11 +104,6 @@
 @stop
 
 @section('javascript')
-    <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
-    <script src="{{ asset('js/cities.js') }}"></script>
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY_FRONT') }}&callback=initMap">
-    </script>
     <script>
         @can('city_delete')
             window.route_mass_crud_entries_destroy = '{{ route('cities.mass_destroy') }}';

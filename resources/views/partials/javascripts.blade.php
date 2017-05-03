@@ -15,6 +15,10 @@
 <script src="{{ url('quickadmin/js') }}/main.js"></script>
 <script src="{{ asset('sbadmin/vendor/metisMenu/metisMenu.min.js') }}"></script>
 <script src="{{ asset('sbadmin/dist/js/sb-admin-2.js') }}"></script>
+<script src="{{ asset('js/cities.js') }}"></script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY_FRONT') }}&callback=initMap">
+</script>
 
 <script>
     window._token = '{{ csrf_token() }}';
