@@ -17,7 +17,8 @@ function displayRoute(startLatLong, endLatLong)
         if (status == google.maps.DirectionsStatus.OK) {
             var directionsDisplay = new google.maps.DirectionsRenderer({
                 map: map,
-                preserveViewport: true
+                preserveViewport: true,
+                suppressMarkers: true
             });
             directionsDisplay.setDirections(response);
         }
@@ -294,10 +295,6 @@ function initMap()
                 google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
                     return function() {
                         for (j = 0; j < citiesToGo.length; j++) {
-                            displayRoute({
-                                lat: citiesToGo[j].latitude,
-                                lng: citiesToGo[j].longitude
-                            }, cities[i].name + ', ' + cities[i].country);
                             displayRoute({
                                 lat: citiesToGo[j].latitude,
                                 lng: citiesToGo[j].longitude
