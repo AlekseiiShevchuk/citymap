@@ -5,8 +5,9 @@ var combineCitiesObjects = [];
 var isInputPriceReady = false;
 var directionService = {};
 var directionDisplayCollection = [];
+var wayPoints = [];
 
-function displayRoute(startLatLong, endLatLong)
+function displayRoute(startLatLong, endLatLong, cityToGo)
 {
     var request = {
         origin: startLatLong,
@@ -23,6 +24,11 @@ function displayRoute(startLatLong, endLatLong)
             });
             directionsDisplay.setDirections(response);
             directionDisplayCollection.push(directionsDisplay);
+            for (i = 0; i < wayPoints.length; i++) {
+                if (wayPoints[i].city == cityToGo) {
+                    wayPoints[i].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+                }
+            }
         }
     });
 }
@@ -102,6 +108,11 @@ function initMap()
                     position: {lat: cities[i].latitude, lng: cities[i].longitude},
                     map: map,
                     icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                });
+
+                wayPoints.push({
+                    marker: marker,
+                    city: cities[i].id
                 });
 
                 directionService = new google.maps.DirectionsService();
@@ -300,7 +311,7 @@ function initMap()
                             displayRoute({
                                 lat: citiesToGo[j].latitude,
                                 lng: citiesToGo[j].longitude
-                            }, cities[i].name + ', ' + cities[i].country);
+                            }, cities[i].name + ', ' + cities[i].country, citiesToGo[j].id);
                         }
                     }
                 })(marker, i, citiesToGo));
@@ -309,6 +320,9 @@ function initMap()
                     return function() {
                         for (j = 0; j < directionDisplayCollection.length; j++) {
                             directionDisplayCollection[j].setMap(null);
+                        }
+                        for (k = 0; k < wayPoints.length; k++) {
+                            wayPoints[k].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
                         }
                         directionDisplayCollection = [];
                     }
