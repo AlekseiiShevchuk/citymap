@@ -93,6 +93,18 @@
                     @endif
                 </div>
             </div>
+            <div class="row">
+                <div class="col-xs-12 form-group">
+                    {!! Form::label('cities_to_go_all', 'Select cities to interact with this city', ['class' => 'control-label']) !!}
+                    {!! Form::select('cities_to_go_all[]', $cities_to_go, old('cities_to_go_all'), ['class' => 'form-control select2', 'multiple' => 'multiple']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('cities_to_go_all'))
+                        <p class="help-block">
+                            {{ $errors->first('cities_to_go_all') }}
+                        </p>
+                    @endif
+                </div>
+            </div>
             <hr>
             <h3>Section to add Localized City data</h3>
             <div class="alert-danger">All fields required</div>

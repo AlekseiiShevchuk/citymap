@@ -151,4 +151,28 @@ class City extends Model implements HasCoordinates
     {
         return $this->belongsTo(Country::class, 'country_id');
     }
+
+    /**
+     * @param array $newCityToGoArray
+     */
+    public function updateReverseCitiesInfo(array $newCityToGoArray)
+    {
+        foreach ($newCityToGoArray as $cityId) {
+            if (!CityTransfer::where([
+                    'city_id' => $cityId,
+                    'city_to_go_id' => $this->id
+                ])->first() instanceof CityTransfer
+            ) {
+                $reverseCity = City::find($cityId);
+                $reverseCity->cities_to_go()->syncWithoutDetaching([$this->id]);
+                $reverseCity->save();
+            }
+        }
+
+        foreach (CityTransfer::all() as $cityTransfer){
+            if(CityTransfer::where(['city_id' => $cityTransfer->city_to_go_id, 'city_to_go_id' => $cityTransfer->city_id])->first() == null){
+                $cityTransfer->delete();
+            }
+        }
+    }
 }

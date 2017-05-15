@@ -43,6 +43,7 @@ class CitiesController extends Controller
         $relations = [
             'languages' => Language::where('is_active_for_admin', 1)->get(),
             'countries' => Country::all()->pluck('name', 'id'),
+            'cities_to_go' => \App\City::get()->pluck('name_en', 'id'),
         ];
 
         $relations['address'] = CityHelper::preFillCityData($relations['languages']);
@@ -62,7 +63,7 @@ class CitiesController extends Controller
             return abort(401);
         }
         $city = City::create($request->all());
-
+        $city->cities_to_go()->sync(array_filter((array)$request->input('cities_to_go_all')));
         foreach ($request->get('languages') as $language_id => $inputLocalizedData) {
             LocalizedCityDatum::create([
                 'name' => $inputLocalizedData['name'],
@@ -71,7 +72,7 @@ class CitiesController extends Controller
                 'city_id' => $city->id,
             ]);
         }
-
+        $city->updateReverseCitiesInfo((array)$request->input('cities_to_go_all'));
         return redirect()->route('cities.index');
     }
 
@@ -113,46 +114,60 @@ class CitiesController extends Controller
 
         $city = City::findOrFail($id);
         $city->update($request->all());
+        if ($request->exists('cities_to_go')) {
+            foreach ($request->input('cities_to_go') as $city_to_go_id => $values) {
+                if (!is_array($values)) {
+                    continue;
+                }
+                $cityTransfer = CityTransfer::where([
+                    'city_id' => $city->id,
+                    'city_to_go_id' => $city_to_go_id
+                ])->get()->first();
 
-        foreach ($request->input('cities_to_go') as $city_to_go_id => $values) {
+                if (!$cityTransfer instanceof CityTransfer) {
+                    continue;
+                }
 
-            $cityTransfer = CityTransfer::where([
-                'city_id' => $city->id,
-                'city_to_go_id' => $city_to_go_id
-            ])->get()->first();
+                $reverseCityTransfer = CityTransfer::where([
+                    'city_id' => $city_to_go_id,
+                    'city_to_go_id' => $city->id
+                ])->get()->first();
 
-            $reverseCityTransfer = CityTransfer::where([
-                'city_id' => $city_to_go_id,
-                'city_to_go_id' => $city->id
-            ])->get()->first();
+                if (!$reverseCityTransfer instanceof CityTransfer) {
+                    continue;
+                }
 
-            $cityTransfer->price_by_car = $values['price_by_car'];
-            $cityTransfer->price_by_train = $values['price_by_train'];
-            $cityTransfer->price_by_plane = $values['price_by_plane'];
+                $cityTransfer->price_by_car = $values['price_by_car'];
+                $cityTransfer->price_by_train = $values['price_by_train'];
+                $cityTransfer->price_by_plane = $values['price_by_plane'];
 
-            if (isset($values['is_possible_to_get_by_car'])) {
-                $cityTransfer->is_possible_to_get_by_car = $values['is_possible_to_get_by_car'];
-            } else {
-                $cityTransfer->is_possible_to_get_by_car = 0;
+                if (isset($values['is_possible_to_get_by_car'])) {
+                    $cityTransfer->is_possible_to_get_by_car = $values['is_possible_to_get_by_car'];
+                } else {
+                    $cityTransfer->is_possible_to_get_by_car = 0;
+                }
+
+                if (isset($values['is_possible_to_get_by_train'])) {
+                    $cityTransfer->is_possible_to_get_by_train = $values['is_possible_to_get_by_train'];
+                } else {
+                    $cityTransfer->is_possible_to_get_by_train = 0;
+                }
+
+                if (isset($values['is_possible_to_get_by_plane'])) {
+                    $cityTransfer->is_possible_to_get_by_plane = $values['is_possible_to_get_by_plane'];
+                } else {
+                    $cityTransfer->is_possible_to_get_by_plane = 0;
+                }
+
+                $cityTransfer->save();
+                $reverseCityTransfer->synchronizeSettings($cityTransfer);
             }
-
-            if (isset($values['is_possible_to_get_by_train'])) {
-                $cityTransfer->is_possible_to_get_by_train = $values['is_possible_to_get_by_train'];
-            } else {
-                $cityTransfer->is_possible_to_get_by_train = 0;
-            }
-
-            if (isset($values['is_possible_to_get_by_plane'])) {
-                $cityTransfer->is_possible_to_get_by_plane = $values['is_possible_to_get_by_plane'];
-            } else {
-                $cityTransfer->is_possible_to_get_by_plane = 0;
-            }
-
-            $cityTransfer->save();
-            $reverseCityTransfer->synchronizeSettings($cityTransfer);
         }
+        $city->cities_to_go()->sync(array_filter((array)$request->input('cities_to_go_all')));
         $city->touch();
         $city->save();
+
+        $city->updateReverseCitiesInfo((array)$request->input('cities_to_go_all'));
 
         return redirect()->route('cities.index');
     }
